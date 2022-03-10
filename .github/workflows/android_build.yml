@@ -1,11 +1,11 @@
-  name: Android Build
+name: Android Build
 
 on: pull_request
 
 jobs:
   build:
 
-    run_on: ubuntu_latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
