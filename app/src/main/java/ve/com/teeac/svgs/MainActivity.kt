@@ -30,5 +30,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Other 4 Hola $name!")
+    Text(text = "Other 5 Hola $name!")
 }
