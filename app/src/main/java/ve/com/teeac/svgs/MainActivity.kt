@@ -20,7 +20,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Text("other test pre-commit")
+                    Text("Test")
+
                 }
             }
         }
