@@ -2,6 +2,13 @@ buildscript {
     ext {
         compose_version = '1.1.1'
         navigation_version = '2.4.1'
+        hilt_version = '2.40'
+        hilt_viewmodel_version = '1.0.0-alpha03'
+        hilt_test_version = '2.28-alpha'
+    }
+    dependencies {
+        // other plugins...
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
     }
 }
 
