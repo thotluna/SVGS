@@ -8,20 +8,33 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import timber.log.Timber
 import ve.com.teeac.svgs.R
+import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
 
-class AuthResultContract : ActivityResultContract<Int, Task<GoogleSignInAccount>?>() {
+class AuthResultContract : ActivityResultContract<Int, Credentials?>() {
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
+    override fun parseResult(resultCode: Int, intent: Intent?): Credentials? {
         return when (resultCode) {
-            Activity.RESULT_OK -> GoogleSignIn.getSignedInAccountFromIntent(intent)
+            Activity.RESULT_OK -> getCredentials(GoogleSignIn.getSignedInAccountFromIntent(intent))
             else -> null
         }
     }
 
     override fun createIntent(context: Context, input: Int): Intent {
         return getGoogleSignInClient(context).signInIntent.putExtra("input", input)
+    }
+
+    private fun getCredentials(task: Task<GoogleSignInAccount>?): Credentials? {
+        return try {
+            val account = task?.getResult(ApiException::class.java) ?: throw CredentialsFailException("User does not exit")
+            if (account.idToken != null) Credentials(account.idToken!!, null) else null
+        } catch (e: ApiException) {
+            Timber.d(e.message)
+            null
+        }
     }
 
     private fun getGoogleSignInClient(context: Context): GoogleSignInClient {
@@ -33,3 +46,5 @@ class AuthResultContract : ActivityResultContract<Int, Task<GoogleSignInAccount>
         return GoogleSignIn.getClient(context, signInOptions)
     }
 }
+
+data class Credentials(val idToken: String, val accessToken: String?)

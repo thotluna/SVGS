@@ -24,8 +24,8 @@ fun GoogleButton(
     val signInRequestCode = 1534
 
     val authResultLauncher =
-        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
-            viewModel.singInGoogle(task)
+        rememberLauncherForActivityResult(contract = AuthResultContract()) { credentials ->
+            viewModel.singInGoogle(credentials)
         }
 
     val colorGoogle = ButtonDefaults.buttonColors(
