@@ -5,21 +5,24 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Blue,
-    primaryVariant = BlueLight,
+    primary = Purple200,
+    primaryVariant = Purple700,
     secondary = Teal200,
+//    surface = Color.Gray
+    onSurface = Color.Black,
     background = BlueBlack,
-    onBackground = Gray
 )
 
 private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
     secondary = Teal200,
+//    surface = Color.Gray,
+    onSurface = Color.Black,
     background = BlueBlack,
-    onBackground = Gray
 
     /* Other default colors to override
     background = Color.White,
@@ -32,7 +35,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun SVGSTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun SVGSTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
@@ -41,7 +44,7 @@ fun SVGSTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable (
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = AppTypography,
         shapes = Shapes,
         content = content
     )
