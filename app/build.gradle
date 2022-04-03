@@ -92,7 +92,8 @@ dependencies {
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_test_version"
 
     //google services
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0'
     implementation platform("com.google.firebase:firebase-bom:$firebase_version")
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
