@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "661147426121",
+    "project_id": "sgcs-fc5e1",
+    "storage_bucket": "sgcs-fc5e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661147426121:android:f308f4b72a9541b1540e98",
+        "android_client_info": {
+          "package_name": "ve.com.teeac.svgs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "661147426121-kbiulut380qj1o60jiuppejteossm893.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0G4IW62g5vpJE1kYX2PyPRKqxR515qV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "661147426121-kbiulut380qj1o60jiuppejteossm893.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -12,9 +12,13 @@
 /captures
 .externalNativeBuild
 .cxx
+.tmp
 local.properties
 /caches/
-/daemon/7.2/
+/daemon
+/daemon/*
 /native/
+/wrapper/dists
+/wrapper/dists/*
 /wrapper/dists/gradle-7.2-bin/2dnblmf4td7x66yl1d74lt32g/gradle-7.2/
 /wrapper/dists/gradle-7.2-bin/2dnblmf4td7x66yl1d74lt32g/
