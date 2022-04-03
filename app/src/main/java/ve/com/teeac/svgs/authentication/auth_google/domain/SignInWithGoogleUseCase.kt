@@ -1,7 +1,7 @@
 package ve.com.teeac.svgs.authentication.auth_google.domain
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
+import ve.com.teeac.svgs.authentication.auth_google.Credentials
+import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import javax.inject.Inject
 
@@ -9,7 +9,7 @@ class SignInWithGoogleUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
 
-    suspend operator fun invoke(task: Task<GoogleSignInAccount>?) {
-        repository.signInWithGoogle(task)
+    suspend operator fun invoke(credentials: Credentials): UserInfo? {
+        return repository.signInWithGoogle(credentials)
     }
 }
