@@ -1,5 +1,8 @@
 package ve.com.teeac.svgs.authentication.data.data_source
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -7,6 +10,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.core.exceptions.AuthenticationException
@@ -18,7 +22,8 @@ class AuthRemoteUser @Inject constructor(
     private val auth: FirebaseAuth
 ) {
 
-    private val externalScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val externalScope: CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     suspend fun signUpByEmailAndPassword(email: String, password: String): UserInfo {
         try {
@@ -73,5 +78,27 @@ class AuthRemoteUser @Inject constructor(
             email = firebaseUser.email,
             token = checkToken.token
         )
+    }
+
+    suspend fun signInWithGoogle(task: Task<GoogleSignInAccount>?) {
+        try {
+            val account = task?.getResult(ApiException::class.java)
+                ?: throw CredentialsFailException("User does not exit")
+            val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
+            firebaseAuthWithCredential(credential)
+        } catch (e: ApiException) {
+            Timber.d(e.message)
+        }
+    }
+
+    private suspend fun firebaseAuthWithCredential(credential: AuthCredential) {
+        try {
+            withContext(Dispatchers.IO) {
+                auth.signInWithCredential(credential).await()
+                return@withContext createUserInfo(auth.currentUser!!)
+            }
+        } catch (e: Exception) {
+            Timber.d(e.message)
+        }
     }
 }

@@ -217,7 +217,7 @@ private fun SocialButtons(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            GoogleButton(onClick = { /*TODO*/ })
+            GoogleButton()
             Text(text = "Or")
             TwitterButton(onClick = { /*TODO*/ })
         }

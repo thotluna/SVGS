@@ -1,5 +1,7 @@
 package ve.com.teeac.svgs.authentication.data.repository
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.SharedFlow
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
@@ -23,5 +25,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun signOut() {
         repositoryRemote.signOut()
+    }
+
+    override suspend fun signInWithGoogle(task: Task<GoogleSignInAccount>?) {
+        repositoryRemote.signInWithGoogle(task)
     }
 }
