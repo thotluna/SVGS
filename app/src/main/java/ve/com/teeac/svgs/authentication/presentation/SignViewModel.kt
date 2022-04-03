@@ -45,7 +45,7 @@ class SignViewModel @Inject constructor(
     }
 
     private fun onSing(username: String, password: String) {
-        _isLoading.value = !isLoading.value
+        _isLoading.value = true
         when (isSingIn.value) {
             true -> onSingIn(username, password)
             false -> onSingUp(username, password)

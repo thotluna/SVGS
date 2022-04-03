@@ -53,7 +53,7 @@ fun AuthenticationForm(
 
     var validate by rememberSaveable { mutableStateOf(false) }
 
-    fun onSingInValidation() {
+    fun onSignInValidation() {
         validate = true
 
         if (!viewModel.isSingIn.value && confirmPasswordError.size > 0) return
@@ -71,16 +71,8 @@ fun AuthenticationForm(
                 )
             )
     ) {
-        Box(
-            modifier = Modifier
-                .padding(16.dp)
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-
-            ) {
+        Box(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.align(Alignment.TopCenter)) {
                 TitleForm()
                 MyField(
                     value = username,
@@ -103,12 +95,19 @@ fun AuthenticationForm(
                         .toMutableStateList(),
                     validate = validate,
                     label = { Text("Password") },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = {
-                        focusManager.moveFocus(
-                            FocusDirection.Down
-                        )
-                    }),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = if (viewModel.isSingIn.value) ImeAction.Done else ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        },
+                        onDone = {
+                            onSignInValidation()
+                        }
+                    ),
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 if (!viewModel.isSingIn.value)
@@ -119,16 +118,16 @@ fun AuthenticationForm(
                         validate = validate,
                         label = { Text("Confirm Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = { onSingInValidation() }),
+                        keyboardActions = KeyboardActions(onDone = { onSignInValidation() }),
                     )
                 Spacer(modifier = Modifier.padding(12.dp))
 
-                if (viewModel.isLoading.value) LoadingSing() else SubmitButton(isSingIn = viewModel.isSingIn.value) { onSingInValidation() }
+                if (viewModel.isLoading.value) LoadingSing() else SubmitButton(isSingIn = viewModel.isSingIn.value) { onSignInValidation() }
                 SocialButtons(isVisible = viewModel.isSingIn.value)
-                Spacer(modifier = Modifier.padding(32.dp))
-            }
+                Spacer(modifier = Modifier.padding(12.dp))
 
-            FormsSwitch(isSingIn = viewModel.isSingIn.value, onChangeForm = { viewModel.onEvent(it) })
+                FormsSwitch(isSingIn = viewModel.isSingIn.value, onChangeForm = { viewModel.onEvent(it) })
+            }
         }
     }
 }
@@ -192,7 +191,7 @@ private fun SubmitButton(
 }
 
 @Composable
-private fun BoxScope.FormsSwitch(
+private fun FormsSwitch(
     isSingIn: Boolean,
     onChangeForm: (SingEvent) -> Unit
 ) {
@@ -201,7 +200,8 @@ private fun BoxScope.FormsSwitch(
         else stringResource(R.string.move_to_sing_in),
         modifier = Modifier
             .clickable { onChangeForm(SingEvent.ChangeSing) }
-            .align(Alignment.BottomCenter)
+            .fillMaxWidth(),
+        textAlign = TextAlign.Center
     )
 }
 
