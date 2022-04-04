@@ -8,20 +8,14 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
-import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
-import ve.com.teeac.svgs.core.exceptions.UserCreationException
+import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 
 @ExperimentalCoroutinesApi
 class AuthRepositoryImplTest {
-
-    @get:Rule
-    var exceptionRule: ExpectedException = ExpectedException.none()
 
     private lateinit var repository: AuthRepository
     private val auth = FirebaseAuth.getInstance()
@@ -67,10 +61,11 @@ class AuthRepositoryImplTest {
             repository.signOut()
         }
 
-        exceptionRule.expect(UserCreationException::class.java)
-        exceptionRule.expectMessage("The user is already registered.")
-
+        val exceptionManager = ExceptionManager.getInstance()
         repository.signUpByEmailAndPassword(email, password)
+
+        val result = exceptionManager.exceptionFlow.first()
+        assertEquals("The user is already registered.", result)
     }
 
     @Test
@@ -92,9 +87,12 @@ class AuthRepositoryImplTest {
         val email = "abc4@gmail.com"
         val password = "4aA@2345"
 
-        exceptionRule.expect(CredentialsFailException::class.java)
-        exceptionRule.expectMessage("Fail credentials")
+        val exceptionManager = ExceptionManager.getInstance()
+
         repository.signInByEmailAndPassword(email, password)
+
+        val result = exceptionManager.exceptionFlow.first()
+        assertEquals("Fail credentials", result)
     }
 
     @Test
@@ -111,9 +109,12 @@ class AuthRepositoryImplTest {
             repository.signOut()
         }
 
-        exceptionRule.expect(CredentialsFailException::class.java)
-        exceptionRule.expectMessage("Fail credentials")
+        val exceptionManager = ExceptionManager.getInstance()
+
         repository.signInByEmailAndPassword(email, "12353215")
+
+        val result = exceptionManager.exceptionFlow.first()
+        assertEquals("Fail credentials", result)
     }
 
     @Test

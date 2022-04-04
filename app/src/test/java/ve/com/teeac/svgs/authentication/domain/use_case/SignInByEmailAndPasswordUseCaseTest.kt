@@ -2,34 +2,25 @@
 package ve.com.teeac.svgs.authentication.domain.use_case
 
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GetTokenResult
+import com.google.firebase.auth.*
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
-import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
+import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 
 @ExperimentalCoroutinesApi
 class SignInByEmailAndPasswordUseCaseTest {
-
-    @get:Rule
-    var exceptionRule: ExpectedException = ExpectedException.none()
 
     @MockK
     private lateinit var currentUser: FirebaseUser
@@ -113,10 +104,12 @@ class SignInByEmailAndPasswordUseCaseTest {
             )
         } throws FirebaseAuthInvalidCredentialsException("code_error", "message")
 
-        exceptionRule.expect(CredentialsFailException::class.java)
-        exceptionRule.expectMessage("Fail credentials")
+        val exceptionManager = ExceptionManager.getInstance()
 
         useCase(email, password)
+
+        val result = exceptionManager.exceptionFlow.first()
+        assertEquals("Fail credentials", result)
     }
 
     @Test
@@ -129,9 +122,11 @@ class SignInByEmailAndPasswordUseCaseTest {
             )
         } throws FirebaseAuthInvalidUserException("ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL", "message")
 
-        exceptionRule.expect(CredentialsFailException::class.java)
-        exceptionRule.expectMessage("Fail credentials")
+        val exceptionManager = ExceptionManager.getInstance()
 
         useCase(email, password)
+
+        val result = exceptionManager.exceptionFlow.first()
+        assertEquals("Fail credentials", result)
     }
 }

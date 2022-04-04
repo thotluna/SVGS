@@ -10,8 +10,7 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.core.exceptions.AuthenticationException
-import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
-import ve.com.teeac.svgs.core.exceptions.UserCreationException
+import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject
 
 class AuthRemoteUser @Inject constructor(
@@ -21,28 +20,40 @@ class AuthRemoteUser @Inject constructor(
     private val externalScope: CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    suspend fun signUpByEmailAndPassword(email: String, password: String): UserInfo {
-        try {
+    suspend fun signUpByEmailAndPassword(email: String, password: String): UserInfo? {
+        return try {
             auth.createUserWithEmailAndPassword(email, password).await()
             if (auth.currentUser == null) throw AuthenticationException("Fail create user")
-
-            return createUserInfo(auth.currentUser!!)
+            createUserInfo(auth.currentUser!!)
         } catch (e: FirebaseAuthUserCollisionException) {
-            throw UserCreationException("The user is already registered.")
+            Timber.d("The user is already registered.")
+            ExceptionManager.getInstance().setException("The user is already registered.")
+            null
+        } catch (e: Exception) {
+            Timber.d("${e.cause}, message: ${e.message}")
+            ExceptionManager.getInstance().setException(e.message!!)
+            null
         }
     }
 
-    suspend fun signInByEmailAndPassword(email: String, password: String): UserInfo {
+    suspend fun signInByEmailAndPassword(email: String, password: String): UserInfo? {
 
-        try {
+        return try {
             auth.signInWithEmailAndPassword(email, password).await()
             if (auth.currentUser == null) throw AuthenticationException("Fail authentication")
-
-            return createUserInfo(auth.currentUser!!)
+            createUserInfo(auth.currentUser!!)
         } catch (e: FirebaseAuthInvalidUserException) {
-            throw CredentialsFailException("Fail credentials")
+            Timber.d("Fail authentication")
+            ExceptionManager.getInstance().setException("Fail credentials")
+            null
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            throw CredentialsFailException("Fail credentials")
+            Timber.d("Fail authentication")
+            ExceptionManager.getInstance().setException("Fail credentials")
+            null
+        } catch (e: Exception) {
+            Timber.d("$e, message: ${e.message}")
+            ExceptionManager.getInstance().setException(e.message!!)
+            null
         }
     }
 
@@ -54,6 +65,8 @@ class AuthRemoteUser @Inject constructor(
             }
             auth.addAuthStateListener(authStateListener)
             awaitClose { auth.removeAuthStateListener(authStateListener) }
+        }.catch {
+            Timber.d("Error. Update current user")
         }.map { authentication ->
             authentication.currentUser?.let { firebaseUser ->
                 createUserInfo(firebaseUser)
@@ -82,19 +95,13 @@ class AuthRemoteUser @Inject constructor(
             auth.signInWithCredential(credential).await()
             createUserInfo(auth.currentUser!!)
         } catch (e: IllegalArgumentException) {
-            throw CredentialsFailException(e.message!!)
-        } catch (e: Exception) {
-            throw Exception(e.message, e.cause)
-        }
-    }
-
-    private suspend fun firebaseAuthWithCredential(credential: AuthCredential): UserInfo? {
-        return try {
-            auth.signInWithCredential(credential).await()
-            createUserInfo(auth.currentUser!!)
-        } catch (e: Exception) {
             Timber.d(e.message)
-            return null
+            ExceptionManager.getInstance().setException(e.message!!)
+            null
+        } catch (e: Exception) {
+            Timber.d("${e.cause}, message: ${e.message}")
+            ExceptionManager.getInstance().setException("Fail credentials")
+            null
         }
     }
 }
