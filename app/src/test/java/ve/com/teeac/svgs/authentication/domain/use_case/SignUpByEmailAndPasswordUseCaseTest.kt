@@ -8,23 +8,19 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
-import ve.com.teeac.svgs.core.exceptions.UserCreationException
+import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 
 @ExperimentalCoroutinesApi
 class SignUpByEmailAndPasswordUseCaseTest {
-
-    @get:Rule
-    var exceptionRule: ExpectedException = ExpectedException.none()
 
     @MockK
     private lateinit var currentUser: FirebaseUser
@@ -109,9 +105,11 @@ class SignUpByEmailAndPasswordUseCaseTest {
             )
         } throws FirebaseAuthUserCollisionException("ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL", "message")
 
-        exceptionRule.expect(UserCreationException::class.java)
-        exceptionRule.expectMessage("The user is already registered.")
+        val exceptionManager = ExceptionManager.getInstance()
 
         useCase(email, password)
+
+        val result = exceptionManager.exceptionFlow.first()
+        assertEquals("The user is already registered.", result)
     }
 }

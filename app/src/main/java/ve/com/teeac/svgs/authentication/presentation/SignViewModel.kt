@@ -11,7 +11,7 @@ import timber.log.Timber
 import ve.com.teeac.svgs.authentication.domain.use_case.ObserverStatusAuthUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignUpByEmailAndPasswordUseCase
-import ve.com.teeac.svgs.core.exceptions.AuthenticationException
+import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,6 +20,8 @@ class SignViewModel @Inject constructor(
     private val signInUseCase: SignInByEmailAndPasswordUseCase,
     private val observerStatusAuthUseCase: ObserverStatusAuthUseCase
 ) : ViewModel() {
+
+    private val exceptionManager = ExceptionManager.getInstance()
 
     private var _isSingIn = mutableStateOf(true)
     val isSingIn: State<Boolean> = _isSingIn
@@ -33,6 +35,12 @@ class SignViewModel @Inject constructor(
                 it?.let {
                     _isLoading.value = false
                 }
+            }
+        }
+
+        viewModelScope.launch {
+            exceptionManager.exceptionFlow.collectLatest {
+                _isLoading.value = false
             }
         }
     }
@@ -57,8 +65,14 @@ class SignViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 signUpUseCase(username, password)
-            } catch (e: AuthenticationException) {
-                Timber.d(e)
+//            } catch (e: AuthenticationException) {
+//                Timber.d(e)
+//                e.message?.let { exceptionManager.setException(it) }
+//                _isLoading.value = false
+            } catch (e: Exception) {
+                Timber.d("$e, message: ${e.message}")
+                e.message?.let { exceptionManager.setException(it) }
+                _isLoading.value = false
             }
         }
     }
@@ -68,8 +82,14 @@ class SignViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 signInUseCase(username, password)
-            } catch (e: AuthenticationException) {
-                Timber.d(e)
+//            } catch (e: AuthenticationException) {
+//                Timber.d(e)
+//                e.message?.let { exceptionManager.setException(it) }
+//                _isLoading.value = false
+            } catch (e: Exception) {
+                Timber.d("$e, message: ${e.message}")
+                e.message?.let { exceptionManager.setException(it) }
+                _isLoading.value = false
             }
         }
     }
