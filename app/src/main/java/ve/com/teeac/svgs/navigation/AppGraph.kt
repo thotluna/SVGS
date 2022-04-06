@@ -42,3 +42,7 @@ fun AppGraph(
 //        }
     }
 }
+
+sealed class DestinationScreen(val route: String) {
+    object MainScreenDest : DestinationScreen(route = "main_screen")
+}
