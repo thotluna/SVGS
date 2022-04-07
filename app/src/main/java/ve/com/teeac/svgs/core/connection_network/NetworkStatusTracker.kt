@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.core.traker_connection
+package ve.com.teeac.svgs.core.connection_network
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -9,26 +9,13 @@ import android.os.Build
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 class NetworkStatusTracker(context: Context) {
     private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
-
-    init {
-        val networkStatusCallback = object : ConnectivityManager.NetworkCallback() {
-            override fun onUnavailable() = println("onUnavailable")
-            override fun onAvailable(network: Network) = println("onAvailable")
-            override fun onLost(network: Network) = println("onLost")
-        }
-
-        val request: NetworkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-
-        connectivityManager!!.registerNetworkCallback(request, networkStatusCallback)
-    }
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     val networkStatus = callbackFlow {
         val networkStatusCallback = object : ConnectivityManager.NetworkCallback() {
@@ -51,23 +38,26 @@ class NetworkStatusTracker(context: Context) {
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
-        connectivityManager!!.registerNetworkCallback(request, networkStatusCallback)
+
+        connectivityManager.registerNetworkCallback(request, networkStatusCallback)
 
         awaitClose {
             connectivityManager.unregisterNetworkCallback(networkStatusCallback)
         }
-    }
+    }.distinctUntilChanged()
 
     @Suppress("DEPRECATION")
-    fun hasConnection(): Boolean {
+    fun hasConnection(version: Int? = null): Boolean {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            connectivityManager!!.getNetworkCapabilities(connectivityManager.activeNetwork)?.let { networkCapabilities ->
+        val versionSdk = version ?: Build.VERSION.SDK_INT
+
+        if (versionSdk >= Build.VERSION_CODES.Q) {
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)?.let { networkCapabilities ->
                 return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
                     networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
             }
         } else {
-            return connectivityManager!!.activeNetworkInfo?.isConnectedOrConnecting == true
+            return connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
         }
 
         return false

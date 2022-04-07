@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.core.traker_connection
+package ve.com.teeac.svgs.core.connection_network
 
 sealed class NetworkStatus {
     object Available : NetworkStatus()
