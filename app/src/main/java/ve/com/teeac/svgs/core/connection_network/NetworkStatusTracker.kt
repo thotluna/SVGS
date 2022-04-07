@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.core.traker_connection
+package ve.com.teeac.svgs.core.connection_network
 
 import android.content.Context
 import android.net.ConnectivityManager

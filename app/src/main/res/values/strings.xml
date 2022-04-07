@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SVGS</string>
+    <string name="app_name">SGGS</string>
     <string name="service_control_and_management_system">Service Control and Management System</string>
     <string name="auth_google">Authentication with Google</string>
     <string name="sing_in">Sing In</string>
