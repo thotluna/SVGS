@@ -24,14 +24,14 @@ private fun getCurrentConnectivityState(
     connectivityManager: ConnectivityManager
 ): ConnectionState {
 
-        val network = connectivityManager.activeNetwork
-        network ?: return ConnectionState.Unavailable
-        val actNetwork = connectivityManager.getNetworkCapabilities(network) ?: return ConnectionState.Unavailable
-         val connected = when {
-            actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            else -> false
-        }
+    val network = connectivityManager.activeNetwork
+    network ?: return ConnectionState.Unavailable
+    val actNetwork = connectivityManager.getNetworkCapabilities(network) ?: return ConnectionState.Unavailable
+    val connected = when {
+        actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        else -> false
+    }
 
     return if (connected) ConnectionState.Available else ConnectionState.Unavailable
 }

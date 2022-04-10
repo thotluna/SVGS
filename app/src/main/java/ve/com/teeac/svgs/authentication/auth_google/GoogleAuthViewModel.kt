@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ve.com.teeac.svgs.authentication.auth_google.domain.SignInWithGoogleUseCase
-import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
+import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +21,7 @@ class GoogleAuthViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     useCase(credentials)
                 }
-            } ?: throw CredentialsFailException("User does not exist")
+            } ?: ExceptionManager.getInstance().setException("User does not exist")
         }
     }
 }
