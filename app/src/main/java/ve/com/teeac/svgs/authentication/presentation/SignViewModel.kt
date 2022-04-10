@@ -48,6 +48,7 @@ class SignViewModel @Inject constructor(
     fun onEvent(event: SingEvent) {
         when (event) {
             is SingEvent.ChangeSing -> onChangeSing()
+            is SingEvent.OnLoading -> _isLoading.value = event.loading
             is SingEvent.Sing -> onSing(event.username, event.password)
         }
     }

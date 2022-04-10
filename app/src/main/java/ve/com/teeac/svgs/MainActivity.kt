@@ -8,6 +8,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ve.com.teeac.svgs.core.connection_network.presentation.ConnectivityStatus
 import ve.com.teeac.svgs.ui.theme.SVGSTheme
 
+const val TAG = "TwitterActivity"
+
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

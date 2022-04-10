@@ -77,7 +77,8 @@ fun AuthenticationForm(
                 MyField(
                     value = username,
                     onValueChange = { username = it },
-                    validation = ValidationField(username).notBlank().emailValid().result().toMutableStateList(),
+                    validation = ValidationField(username).notBlank().emailValid().result()
+                        .toMutableStateList(),
                     validate = validate,
                     label = { Text("Username") },
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
@@ -114,7 +115,8 @@ fun AuthenticationForm(
                     MyField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
-                        validation = ValidationField(confirmPassword).notBlank().passwordValid().compareTo(password).result().toMutableStateList(),
+                        validation = ValidationField(confirmPassword).notBlank().passwordValid()
+                            .compareTo(password).result().toMutableStateList(),
                         validate = validate,
                         label = { Text("Confirm Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -122,11 +124,22 @@ fun AuthenticationForm(
                     )
                 Spacer(modifier = Modifier.padding(12.dp))
 
-                if (viewModel.isLoading.value) LoadingSing() else SubmitButton(isSingIn = viewModel.isSingIn.value) { onSignInValidation() }
-                SocialButtons(isVisible = viewModel.isSingIn.value)
+                if (viewModel.isLoading.value) {
+                    LoadingSing()
+                } else {
+                    SubmitButton(isSingIn = viewModel.isSingIn.value) { onSignInValidation() }
+                    SocialButtons(isVisible = viewModel.isSingIn.value, loading = {
+                        viewModel.onEvent(
+                            SingEvent.OnLoading(true)
+                        )
+                    })
+                }
                 Spacer(modifier = Modifier.padding(12.dp))
 
-                FormsSwitch(isSingIn = viewModel.isSingIn.value, onChangeForm = { viewModel.onEvent(it) })
+                FormsSwitch(
+                    isSingIn = viewModel.isSingIn.value,
+                    onChangeForm = { viewModel.onEvent(it) }
+                )
             }
         }
     }
@@ -147,7 +160,8 @@ fun TitleForm() {
 @Composable
 fun LoadingSing() {
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(bottom = 16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -208,6 +222,7 @@ private fun FormsSwitch(
 @Composable
 private fun SocialButtons(
     isVisible: Boolean,
+    loading: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (isVisible) {
@@ -217,9 +232,9 @@ private fun SocialButtons(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            GoogleButton()
+            GoogleButton(loading)
             Text(text = "Or")
-            TwitterButton(onClick = { /*TODO*/ })
+            TwitterButton(loading)
         }
     }
 }
