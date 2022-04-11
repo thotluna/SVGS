@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.authentication.auth_twitter.data.data_source
+package ve.com.teeac.svgs.authentication.data.data_source
 
 import android.app.Activity
 import com.google.android.gms.tasks.Task

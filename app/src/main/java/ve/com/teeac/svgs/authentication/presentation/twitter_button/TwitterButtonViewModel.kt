@@ -1,11 +1,11 @@
-package ve.com.teeac.svgs.authentication.auth_twitter
+package ve.com.teeac.svgs.authentication.presentation.twitter_button
 
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import ve.com.teeac.svgs.authentication.auth_twitter.domain.SignInTwitterUseCase
+import ve.com.teeac.svgs.authentication.domain.use_case.SignInTwitterUseCase
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject
 

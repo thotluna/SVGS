@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.authentication.auth_twitter.domain
+package ve.com.teeac.svgs.authentication.domain.use_case
 
 import android.app.Activity
 import io.mockk.*
@@ -6,10 +6,10 @@ import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.auth_twitter.data.data_source.AuthenticationOAuthByFirebase
+import ve.com.teeac.svgs.authentication.data.data_source.AuthenticationOAuthByFirebase
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 
 @ExperimentalCoroutinesApi

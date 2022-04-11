@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.authentication.auth_twitter.data.data_source
+package ve.com.teeac.svgs.authentication.data.data_source
 
 import android.app.Activity
 import com.google.android.gms.tasks.Task
@@ -6,7 +6,6 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.tasks.await
-import ve.com.teeac.svgs.authentication.data.data_source.convertFirebaseUserToUserInfo
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.di.AuthTwitter
 import javax.inject.Inject

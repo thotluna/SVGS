@@ -27,9 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ve.com.teeac.svgs.R
-import ve.com.teeac.svgs.authentication.ValidationField
-import ve.com.teeac.svgs.authentication.auth_google.GoogleButton
-import ve.com.teeac.svgs.authentication.auth_twitter.TwitterButton
+import ve.com.teeac.svgs.authentication.domain.ValidationField
+import ve.com.teeac.svgs.authentication.presentation.google_button.GoogleButton
+import ve.com.teeac.svgs.authentication.presentation.twitter_button.TwitterButton
 import ve.com.teeac.svgs.core.presentation.MyField
 
 @ExperimentalComposeUiApi

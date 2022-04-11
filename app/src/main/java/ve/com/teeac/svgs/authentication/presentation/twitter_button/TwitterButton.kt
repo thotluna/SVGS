@@ -1,12 +1,13 @@
-package ve.com.teeac.svgs.authentication.auth_google
+package ve.com.teeac.svgs.authentication.presentation.twitter_button
 
-import androidx.activity.compose.rememberLauncherForActivityResult
+import android.app.Activity
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -16,48 +17,41 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ve.com.teeac.svgs.R
 
 @Composable
-fun GoogleButton(
+fun TwitterButton(
     onLoading: () -> Unit,
     isDisable: Boolean,
     modifier: Modifier = Modifier,
-    viewModel: GoogleAuthViewModel = hiltViewModel(),
+    viewModel: TwitterButtonViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
 
-    val signInRequestCode = 1534
-
-    val authResultLauncher =
-        rememberLauncherForActivityResult(contract = AuthResultContract()) { credentials ->
-            viewModel.singInGoogle(credentials)
-        }
-
-    val colorGoogle = ButtonDefaults.buttonColors(
-        backgroundColor = colorResource(id = R.color.google_red),
+    val colorTwitter = ButtonDefaults.buttonColors(
+        backgroundColor = colorResource(id = R.color.twitter_blue),
         contentColor = MaterialTheme.colors.surface
     )
 
     fun click() {
-        authResultLauncher.launch(signInRequestCode)
         onLoading()
+        viewModel.signIn(context as Activity)
     }
 
     Button(
         onClick = { click() },
         modifier = modifier,
-        colors = colorGoogle,
         enabled = !isDisable,
-        shape = RoundedCornerShape(24.dp)
+        colors = colorTwitter, shape = RoundedCornerShape(24.dp)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_google),
+            painter = painterResource(id = R.drawable.ic_twitter),
             contentDescription = stringResource(R.string.auth_google)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(stringResource(R.string.auth_with_google))
+        Text(stringResource(R.string.auth_with_twitter))
     }
 }
 
 @Preview
 @Composable
-private fun GoogleButtonPreview() {
-    GoogleButton({}, isDisable = false)
+private fun TwitterButtonPreview() {
+    TwitterButton({}, isDisable = false)
 }
