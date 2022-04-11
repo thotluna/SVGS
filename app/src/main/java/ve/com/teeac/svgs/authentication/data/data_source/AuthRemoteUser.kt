@@ -80,15 +80,6 @@ class AuthRemoteUser @Inject constructor(
 
     fun signOut() = auth.signOut()
 
-    private suspend fun createUserInfo(firebaseUser: FirebaseUser): UserInfo {
-        val checkToken = firebaseUser.getIdToken(true).await()
-        return UserInfo(
-            displayName = firebaseUser.displayName,
-            email = firebaseUser.email,
-            token = checkToken.token
-        )
-    }
-
     suspend fun authenticationWithCredential(idToken: String, accessToken: String?): UserInfo? {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, accessToken)

@@ -46,6 +46,13 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+task ktlintFormatF(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args "-F", "src/**/*.kt"
+}
+
 task installGitHook(type: Copy) {
     from new File(rootProject.rootDir, 'pre-commit')
     into { new File(rootProject.rootDir, '.git/hooks') }

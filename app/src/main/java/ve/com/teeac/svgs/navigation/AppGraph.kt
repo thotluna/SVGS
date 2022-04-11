@@ -1,3 +1,5 @@
+@file:Suppress("unused", "unused")
+
 package ve.com.teeac.svgs.navigation
 
 import androidx.compose.runtime.Composable

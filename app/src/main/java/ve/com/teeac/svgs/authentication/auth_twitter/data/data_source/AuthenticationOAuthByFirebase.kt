@@ -8,38 +8,27 @@ import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.tasks.await
 import ve.com.teeac.svgs.authentication.data.data_source.convertFirebaseUserToUserInfo
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
-import ve.com.teeac.svgs.core.exceptions.ExceptionManager
+import ve.com.teeac.svgs.di.AuthTwitter
+import javax.inject.Inject
 
-class AuthenticationOAuthByFirebase(
-    providerId: String
+class AuthenticationOAuthByFirebase @Inject constructor(
+    private val auth: FirebaseAuth,
+    @AuthTwitter private val provider: OAuthProvider
 ) {
 
-    private val auth = FirebaseAuth.getInstance()
-
-    private val provider = OAuthProvider.newBuilder(providerId)
-
     suspend fun signIn(activity: Activity): UserInfo? {
-        val task = getTask(activity)
-        val authResult = getPendingResult(task)
-        return authResult?.let {
-            convertFirebaseUserToUserInfo(authResult.user!!)
+
+        val task = getTask(activity).await()
+        return task?.let {
+            convertFirebaseUserToUserInfo(task.user!!)
         }
     }
 
     private fun getTask(activity: Activity): Task<AuthResult?> {
-        return auth.pendingAuthResult ?: auth.startActivityForSignInWithProvider(activity, provider.build())
-    }
 
-    private suspend fun getPendingResult(task: Task<AuthResult?>): AuthResult? {
-        return try {
-            task.await()
-        } catch (e: Exception) {
-            handleError(e)
-            null
-        }
-    }
-
-    private suspend fun handleError(e: Exception) {
-        ExceptionManager.getInstance().setException(e.message!!)
+        return auth.pendingAuthResult ?: auth.startActivityForSignInWithProvider(
+            activity,
+            provider
+        )
     }
 }

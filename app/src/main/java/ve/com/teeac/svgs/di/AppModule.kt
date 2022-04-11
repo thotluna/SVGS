@@ -1,15 +1,19 @@
 package ve.com.teeac.svgs.di
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ve.com.teeac.svgs.authentication.auth_twitter.data.data_source.AuthenticationOAuthByFirebase
+import ve.com.teeac.svgs.authentication.auth_twitter.domain.SignInTwitterUseCase
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignUpByEmailAndPasswordUseCase
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -59,7 +63,35 @@ object AppModule {
     fun provideSignInUseCase(repository: AuthRepository): SignInByEmailAndPasswordUseCase {
         return SignInByEmailAndPasswordUseCase(repository)
     }
+
+    @AuthTwitter
+    @Provides
+    fun provideOAuthProviderTwitter(): OAuthProvider {
+        return OAuthProvider.newBuilder("twitter.com")
+            .build()
+    }
+
+    @AuthTwitter
+    @Provides
+    fun providesAuthenticationOAuthByFirebase(
+        firebaseAuth: FirebaseAuth,
+        @AuthTwitter oAuthProvider: OAuthProvider
+    ): AuthenticationOAuthByFirebase {
+        return AuthenticationOAuthByFirebase(firebaseAuth, oAuthProvider)
+    }
+
+    @AuthTwitter
+    @Provides
+    fun providesSignTwitterUseCase(
+        @AuthTwitter auth: AuthenticationOAuthByFirebase
+    ): SignInTwitterUseCase {
+        return SignInTwitterUseCase(auth)
+    }
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AuthTwitter
 
 // @Retention(AnnotationRetention.BINARY)
 // @Qualifier

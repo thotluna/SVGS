@@ -1,7 +1,10 @@
 package ve.com.teeac.svgs.authentication.presentation
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -53,6 +56,8 @@ fun AuthenticationForm(
 
     var validate by rememberSaveable { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
+
     fun onSignInValidation() {
         validate = true
 
@@ -72,7 +77,11 @@ fun AuthenticationForm(
             )
     ) {
         Box(modifier = Modifier.padding(16.dp)) {
-            Column(modifier = Modifier.align(Alignment.TopCenter)) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .scrollable(scrollState, orientation = Orientation.Vertical)
+            ) {
                 TitleForm()
                 MyField(
                     value = username,
@@ -232,7 +241,7 @@ private fun SocialButtons(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            GoogleButton(loading)
+            GoogleButton()
             Text(text = "Or")
             TwitterButton(loading)
         }

@@ -27,9 +27,3 @@ class MainViewModel @Inject constructor(
         }
     }
 }
-
-enum class MainStatus {
-    LOADING,
-    LOGGED,
-    ANONYMOUS
-}
