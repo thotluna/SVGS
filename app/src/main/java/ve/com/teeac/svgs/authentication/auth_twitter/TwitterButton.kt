@@ -19,8 +19,9 @@ import ve.com.teeac.svgs.R
 @Composable
 fun TwitterButton(
     onLoading: () -> Unit,
+    isDisable: Boolean,
     modifier: Modifier = Modifier,
-    viewModel: TwitterButtonViewModel = hiltViewModel()
+    viewModel: TwitterButtonViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
 
@@ -29,12 +30,15 @@ fun TwitterButton(
         contentColor = MaterialTheme.colors.surface
     )
 
+    fun click() {
+        onLoading()
+        viewModel.signIn(context as Activity)
+    }
+
     Button(
-        onClick = {
-            onLoading()
-            viewModel.signIn(context as Activity)
-        },
+        onClick = { click() },
         modifier = modifier,
+        enabled = !isDisable,
         colors = colorTwitter, shape = RoundedCornerShape(24.dp)
     ) {
         Icon(
@@ -49,7 +53,5 @@ fun TwitterButton(
 @Preview
 @Composable
 private fun TwitterButtonPreview() {
-    TwitterButton(
-        {},
-    )
+    TwitterButton({}, isDisable = false)
 }

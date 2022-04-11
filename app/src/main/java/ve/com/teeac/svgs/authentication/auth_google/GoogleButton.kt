@@ -17,6 +17,8 @@ import ve.com.teeac.svgs.R
 
 @Composable
 fun GoogleButton(
+    onLoading: () -> Unit,
+    isDisable: Boolean,
     modifier: Modifier = Modifier,
     viewModel: GoogleAuthViewModel = hiltViewModel(),
 ) {
@@ -33,12 +35,16 @@ fun GoogleButton(
         contentColor = MaterialTheme.colors.surface
     )
 
+    fun click() {
+        authResultLauncher.launch(signInRequestCode)
+        onLoading()
+    }
+
     Button(
-        onClick = {
-            authResultLauncher.launch(signInRequestCode)
-        },
+        onClick = { click() },
         modifier = modifier,
         colors = colorGoogle,
+        enabled = !isDisable,
         shape = RoundedCornerShape(24.dp)
     ) {
         Icon(
@@ -53,5 +59,5 @@ fun GoogleButton(
 @Preview
 @Composable
 private fun GoogleButtonPreview() {
-    GoogleButton()
+    GoogleButton({}, isDisable = false)
 }

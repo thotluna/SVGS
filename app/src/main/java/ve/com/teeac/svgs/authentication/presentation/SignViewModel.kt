@@ -48,7 +48,7 @@ class SignViewModel @Inject constructor(
     fun onEvent(event: SingEvent) {
         when (event) {
             is SingEvent.ChangeSing -> onChangeSing()
-            is SingEvent.OnLoading -> _isLoading.value = event.loading
+            is SingEvent.OnLoading -> _isLoading.value = !isLoading.value
             is SingEvent.Sing -> onSing(event.username, event.password)
         }
     }
@@ -66,10 +66,6 @@ class SignViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 signUpUseCase(username, password)
-//            } catch (e: AuthenticationException) {
-//                Timber.d(e)
-//                e.message?.let { exceptionManager.setException(it) }
-//                _isLoading.value = false
             } catch (e: Exception) {
                 Timber.d("$e, message: ${e.message}")
                 e.message?.let { exceptionManager.setException(it) }
@@ -83,10 +79,6 @@ class SignViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 signInUseCase(username, password)
-//            } catch (e: AuthenticationException) {
-//                Timber.d(e)
-//                e.message?.let { exceptionManager.setException(it) }
-//                _isLoading.value = false
             } catch (e: Exception) {
                 Timber.d("$e, message: ${e.message}")
                 e.message?.let { exceptionManager.setException(it) }
