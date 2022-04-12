@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.TestOnly
 import timber.log.Timber
 import ve.com.teeac.svgs.authentication.domain.use_case.ObserverStatusAuthUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
@@ -53,16 +54,17 @@ class SignViewModel @Inject constructor(
         }
     }
 
-    private fun onSing(username: String, password: String) {
-        _isLoading.value = true
+    @TestOnly
+    fun onSing(username: String, password: String) {
         when (isSingIn.value) {
             true -> onSingIn(username, password)
             false -> onSingUp(username, password)
         }
+        _isLoading.value = true
     }
 
-    private fun onSingUp(username: String, password: String) {
-        Timber.d("username: $username, password: $password")
+    @TestOnly
+    fun onSingUp(username: String, password: String) {
         viewModelScope.launch {
             try {
                 signUpUseCase(username, password)
@@ -75,7 +77,6 @@ class SignViewModel @Inject constructor(
     }
 
     private fun onSingIn(username: String, password: String) {
-        Timber.d("username: $username, password: $password")
         viewModelScope.launch {
             try {
                 signInUseCase(username, password)

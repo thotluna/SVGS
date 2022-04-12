@@ -7,9 +7,16 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockkStatic
+import io.mockk.unmockkAll
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -19,8 +26,11 @@ import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 
+@DelicateCoroutinesApi
 @ExperimentalCoroutinesApi
 class SignUpByEmailAndPasswordUseCaseTest {
+
+    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @MockK
     private lateinit var currentUser: FirebaseUser
@@ -51,7 +61,7 @@ class SignUpByEmailAndPasswordUseCaseTest {
 
     @Before
     fun setUp() {
-
+        Dispatchers.setMain(mainThreadSurrogate)
         MockKAnnotations.init(this, relaxUnitFun = true)
         mockkStatic("kotlinx.coroutines.tasks.TasksKt")
 
@@ -59,6 +69,13 @@ class SignUpByEmailAndPasswordUseCaseTest {
         authRemoteUser = AuthRemoteUser(firebaseAuth)
         repository = AuthRepositoryImpl(authRemoteUser)
         useCase = SignUpByEmailAndPasswordUseCase(repository)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
+        Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
+        mainThreadSurrogate.close()
     }
 
     @Test
