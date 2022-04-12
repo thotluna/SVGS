@@ -24,7 +24,7 @@ class AuthRemoteUser @Inject constructor(
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
             if (auth.currentUser == null) throw AuthenticationException("Fail create user")
-            createUserInfo(auth.currentUser!!)
+            convertFirebaseUserToUserInfo(auth.currentUser!!)
         } catch (e: FirebaseAuthUserCollisionException) {
             Timber.d("The user is already registered.")
             ExceptionManager.getInstance().setException("The user is already registered.")
@@ -41,7 +41,7 @@ class AuthRemoteUser @Inject constructor(
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
             if (auth.currentUser == null) throw AuthenticationException("Fail authentication")
-            createUserInfo(auth.currentUser!!)
+            convertFirebaseUserToUserInfo(auth.currentUser!!)
         } catch (e: FirebaseAuthInvalidUserException) {
             Timber.d("Fail authentication")
             ExceptionManager.getInstance().setException("Fail credentials")
@@ -69,7 +69,7 @@ class AuthRemoteUser @Inject constructor(
             Timber.d("Error. Update current user")
         }.map { authentication ->
             authentication.currentUser?.let { firebaseUser ->
-                createUserInfo(firebaseUser)
+                convertFirebaseUserToUserInfo(firebaseUser)
             }
         }.shareIn(
             scope = externalScope,
@@ -80,20 +80,11 @@ class AuthRemoteUser @Inject constructor(
 
     fun signOut() = auth.signOut()
 
-    private suspend fun createUserInfo(firebaseUser: FirebaseUser): UserInfo {
-        val checkToken = firebaseUser.getIdToken(true).await()
-        return UserInfo(
-            displayName = firebaseUser.displayName,
-            email = firebaseUser.email,
-            token = checkToken.token
-        )
-    }
-
     suspend fun authenticationWithCredential(idToken: String, accessToken: String?): UserInfo? {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, accessToken)
             auth.signInWithCredential(credential).await()
-            createUserInfo(auth.currentUser!!)
+            convertFirebaseUserToUserInfo(auth.currentUser!!)
         } catch (e: IllegalArgumentException) {
             Timber.d(e.message)
             ExceptionManager.getInstance().setException(e.message!!)

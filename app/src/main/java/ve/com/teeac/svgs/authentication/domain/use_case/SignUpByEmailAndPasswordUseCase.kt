@@ -13,10 +13,8 @@ class SignUpByEmailAndPasswordUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(email: String, password: String): UserInfo? {
-        var userInfo: UserInfo?
-        withContext(ioDispatcher) {
-            userInfo = repository.signUpByEmailAndPassword(email, password)
+        return withContext(ioDispatcher) {
+            return@withContext repository.signUpByEmailAndPassword(email, password)
         }
-        return userInfo
     }
 }

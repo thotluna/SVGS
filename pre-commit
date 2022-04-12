@@ -1,15 +1,15 @@
 #!/bin/bash
 
 git stash -q --keep-index
-echo "Running ktlintCheck git pre-commit hook"
-./gradlew ktlintCheck
+echo "Running ktlintFormat git pre-commit hook"
+./gradlew ktlintFormat
 RESULT=$?
 git stash pop -q
 [ $RESULT -ne 0 ] && exit 1
 
 git stash -q --keep-index
-echo "Running ktlintFormat git pre-commit hook"
-./gradlew ktlintFormat
+echo "Running ktlintCheck git pre-commit hook"
+./gradlew ktlintCheck
 RESULT=$?
 git stash pop -q
 [ $RESULT -ne 0 ] && exit 1

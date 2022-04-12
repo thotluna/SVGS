@@ -1,5 +1,5 @@
 
-package ve.com.teeac.svgs.authentication
+package ve.com.teeac.svgs.authentication.domain
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

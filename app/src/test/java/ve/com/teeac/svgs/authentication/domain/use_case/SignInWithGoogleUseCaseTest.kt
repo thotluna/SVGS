@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.authentication.auth_google.domain
+package ve.com.teeac.svgs.authentication.domain.use_case
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
@@ -12,8 +12,8 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.auth_google.Credentials
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
+import ve.com.teeac.svgs.authentication.data.data_source.Credentials
 import ve.com.teeac.svgs.authentication.data.models.UserInfo
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository

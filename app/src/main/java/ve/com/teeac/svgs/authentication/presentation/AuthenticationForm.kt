@@ -1,30 +1,38 @@
 package ve.com.teeac.svgs.authentication.presentation
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ve.com.teeac.svgs.R
-import ve.com.teeac.svgs.authentication.ValidationField
-import ve.com.teeac.svgs.authentication.auth_google.GoogleButton
-import ve.com.teeac.svgs.authentication.auth_twitter.TwitterButton
+import ve.com.teeac.svgs.authentication.domain.ValidationField
+import ve.com.teeac.svgs.authentication.presentation.google_button.GoogleButton
+import ve.com.teeac.svgs.authentication.presentation.twitter_button.TwitterButton
 import ve.com.teeac.svgs.core.presentation.MyField
-import ve.com.teeac.svgs.core.presentation.loading.LoadingAnimation
 
+@ExperimentalComposeUiApi
 @Composable
 fun AuthenticationForm(
     modifier: Modifier = Modifier,
@@ -32,6 +40,7 @@ fun AuthenticationForm(
 ) {
 
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     var username by rememberSaveable { mutableStateOf("") }
     val usernameError = ValidationField(username)
@@ -53,6 +62,8 @@ fun AuthenticationForm(
 
     var validate by rememberSaveable { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
+
     fun onSignInValidation() {
         validate = true
 
@@ -72,12 +83,17 @@ fun AuthenticationForm(
             )
     ) {
         Box(modifier = Modifier.padding(16.dp)) {
-            Column(modifier = Modifier.align(Alignment.TopCenter)) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .scrollable(scrollState, orientation = Orientation.Vertical)
+            ) {
                 TitleForm()
                 MyField(
                     value = username,
                     onValueChange = { username = it },
-                    validation = ValidationField(username).notBlank().emailValid().result().toMutableStateList(),
+                    validation = ValidationField(username).notBlank().emailValid().result()
+                        .toMutableStateList(),
                     validate = validate,
                     label = { Text("Username") },
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
@@ -106,6 +122,7 @@ fun AuthenticationForm(
                         },
                         onDone = {
                             onSignInValidation()
+                            keyboardController?.hide()
                         }
                     ),
                 )
@@ -114,19 +131,42 @@ fun AuthenticationForm(
                     MyField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
-                        validation = ValidationField(confirmPassword).notBlank().passwordValid().compareTo(password).result().toMutableStateList(),
+                        validation = ValidationField(confirmPassword).notBlank().passwordValid()
+                            .compareTo(password).result().toMutableStateList(),
                         validate = validate,
                         label = { Text("Confirm Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = { onSignInValidation() }),
+                        keyboardActions = KeyboardActions(onDone = {
+                            onSignInValidation()
+                            keyboardController?.hide()
+                        }),
                     )
                 Spacer(modifier = Modifier.padding(12.dp))
 
-                if (viewModel.isLoading.value) LoadingSing() else SubmitButton(isSingIn = viewModel.isSingIn.value) { onSignInValidation() }
-                SocialButtons(isVisible = viewModel.isSingIn.value)
+                SubmitButton(
+                    isSingIn = viewModel.isSingIn.value,
+                    isDisable = viewModel.isLoading.value
+                ) {
+                    onSignInValidation()
+                    keyboardController?.hide()
+                }
+
+                SocialButtons(
+                    isVisible = viewModel.isSingIn.value,
+                    isDisable = viewModel.isLoading.value,
+                    onLoading = {
+                        viewModel.onEvent(
+                            SingEvent.OnLoading
+                        )
+                    }
+                )
+
                 Spacer(modifier = Modifier.padding(12.dp))
 
-                FormsSwitch(isSingIn = viewModel.isSingIn.value, onChangeForm = { viewModel.onEvent(it) })
+                FormsSwitch(
+                    isSingIn = viewModel.isSingIn.value,
+                    onChangeForm = { viewModel.onEvent(it) }
+                )
             }
         }
     }
@@ -145,27 +185,15 @@ fun TitleForm() {
 }
 
 @Composable
-fun LoadingSing() {
-    Box(
-        modifier = Modifier.fillMaxWidth()
-            .padding(bottom = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        LoadingAnimation(
-            circleSize = 10.dp,
-            travelDistance = 20.dp
-        )
-    }
-}
-
-@Composable
 private fun SubmitButton(
     isSingIn: Boolean,
+    isDisable: Boolean,
     onSingInValidation: () -> Unit,
 ) {
     Button(
         onClick = { onSingInValidation() },
         shape = RoundedCornerShape(36.dp),
+        enabled = !isDisable,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
@@ -208,6 +236,8 @@ private fun FormsSwitch(
 @Composable
 private fun SocialButtons(
     isVisible: Boolean,
+    isDisable: Boolean,
+    onLoading: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (isVisible) {
@@ -217,9 +247,9 @@ private fun SocialButtons(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            GoogleButton()
+            GoogleButton(onLoading = onLoading, isDisable = isDisable)
             Text(text = "Or")
-            TwitterButton(onClick = { /*TODO*/ })
+            TwitterButton(onLoading = onLoading, isDisable = isDisable)
         }
     }
 }

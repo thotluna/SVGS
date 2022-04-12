@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.authentication.auth_google
+package ve.com.teeac.svgs.authentication.presentation.google_button
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +14,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ve.com.teeac.svgs.R
+import ve.com.teeac.svgs.authentication.data.data_source.AuthResultContract
 
 @Composable
 fun GoogleButton(
+    onLoading: () -> Unit,
+    isDisable: Boolean,
     modifier: Modifier = Modifier,
     viewModel: GoogleAuthViewModel = hiltViewModel(),
 ) {
@@ -33,10 +36,16 @@ fun GoogleButton(
         contentColor = MaterialTheme.colors.surface
     )
 
+    fun click() {
+        authResultLauncher.launch(signInRequestCode)
+        onLoading()
+    }
+
     Button(
-        onClick = { authResultLauncher.launch(signInRequestCode) },
+        onClick = { click() },
         modifier = modifier,
         colors = colorGoogle,
+        enabled = !isDisable,
         shape = RoundedCornerShape(24.dp)
     ) {
         Icon(
@@ -51,6 +60,5 @@ fun GoogleButton(
 @Preview
 @Composable
 private fun GoogleButtonPreview() {
-
-    GoogleButton()
+    GoogleButton({}, isDisable = false)
 }

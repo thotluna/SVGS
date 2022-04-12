@@ -9,9 +9,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import ve.com.teeac.svgs.R
 
+@ExperimentalComposeUiApi
 @Composable
 fun AuthenticationScreen(
     modifier: Modifier = Modifier
@@ -19,7 +23,6 @@ fun AuthenticationScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-
     ) {
         Box(
             modifier = Modifier
@@ -28,7 +31,7 @@ fun AuthenticationScreen(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "SCGS",
+                text = stringResource(id = R.string.app_name),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.h1,
                 color = MaterialTheme.colors.surface

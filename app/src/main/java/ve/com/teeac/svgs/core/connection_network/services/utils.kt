@@ -1,5 +1,6 @@
 package ve.com.teeac.svgs.core.connection_network.services
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -17,23 +18,30 @@ val Context.currentConnectivityState: ConnectionState
         return getCurrentConnectivityState(connectivityManager)
     }
 
+@Suppress("DEPRECATION")
+@SuppressLint("ObsoleteSdkInt")
 private fun getCurrentConnectivityState(
     connectivityManager: ConnectivityManager
 ): ConnectionState {
-    val connected = connectivityManager.allNetworks.any { network ->
-        connectivityManager.getNetworkCapabilities(network)
-            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            ?: false
+
+    val network = connectivityManager.activeNetwork
+    network ?: return ConnectionState.Unavailable
+    val actNetwork = connectivityManager.getNetworkCapabilities(network) ?: return ConnectionState.Unavailable
+    val connected = when {
+        actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        else -> false
     }
 
     return if (connected) ConnectionState.Available else ConnectionState.Unavailable
 }
 
 @ExperimentalCoroutinesApi
-fun Context.observeConnectivityAsFlow() = callbackFlow {
+fun Context.observeConnectivityAsFlow(connectionStateTest: ConnectionState? = null) = callbackFlow {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val callback = NetworkCallback { connectionState -> trySend(connectionState) }
+    val callback = if (connectionStateTest == null) networkCallback { connectionState -> trySend(connectionState) }
+    else networkCallback { trySend(connectionStateTest) }
 
     val networkRequest = NetworkRequest.Builder()
         .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -49,7 +57,7 @@ fun Context.observeConnectivityAsFlow() = callbackFlow {
     }
 }
 
-fun NetworkCallback(callback: (ConnectionState) -> Unit): ConnectivityManager.NetworkCallback {
+fun networkCallback(callback: (ConnectionState) -> Unit): ConnectivityManager.NetworkCallback {
     return object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             callback(ConnectionState.Available)
