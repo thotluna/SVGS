@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.tasks.await
 import ve.com.teeac.svgs.authentication.data.models.User
+import ve.com.teeac.svgs.authentication.data.utils.convertFirebaseUserToUserInfo
 
 abstract class OAuthRemoteUser(
     private val auth: FirebaseAuth,

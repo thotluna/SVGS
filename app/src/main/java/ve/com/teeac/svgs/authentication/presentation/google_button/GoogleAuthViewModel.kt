@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ve.com.teeac.svgs.authentication.data.data_source.Credentials
+import ve.com.teeac.svgs.authentication.data.models.Credentials
 import ve.com.teeac.svgs.authentication.domain.use_case.SignInWithGoogleUseCase
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject

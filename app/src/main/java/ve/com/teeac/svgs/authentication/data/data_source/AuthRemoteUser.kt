@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import ve.com.teeac.svgs.authentication.data.models.User
+import ve.com.teeac.svgs.authentication.data.utils.convertFirebaseUserToUserInfo
 import ve.com.teeac.svgs.core.exceptions.AuthenticationException
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject

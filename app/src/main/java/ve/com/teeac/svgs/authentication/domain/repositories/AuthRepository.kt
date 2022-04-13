@@ -1,7 +1,7 @@
 package ve.com.teeac.svgs.authentication.domain.repositories
 
 import kotlinx.coroutines.flow.SharedFlow
-import ve.com.teeac.svgs.authentication.data.data_source.Credentials
+import ve.com.teeac.svgs.authentication.data.models.Credentials
 import ve.com.teeac.svgs.authentication.data.models.User
 
 interface AuthRepository {

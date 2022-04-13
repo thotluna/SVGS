@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.authentication.data.data_source
+package ve.com.teeac.svgs.authentication.data.utils
 
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await

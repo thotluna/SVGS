@@ -12,6 +12,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import timber.log.Timber
 import ve.com.teeac.svgs.R
+import ve.com.teeac.svgs.authentication.data.models.Credentials
 import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
 
 class AuthResultContract : ActivityResultContract<Int, Credentials?>() {
@@ -46,5 +47,3 @@ class AuthResultContract : ActivityResultContract<Int, Credentials?>() {
         return GoogleSignIn.getClient(context, signInOptions)
     }
 }
-
-data class Credentials(val idToken: String, val accessToken: String?)

@@ -6,7 +6,8 @@ import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.domain.repositories.OAuthRepository
 import javax.inject.Inject
 
-class OAuthRepositoryImpl @Inject constructor(
+class
+OAuthRepositoryImpl @Inject constructor(
     private val service: OAuthRemoteUser
 ) : OAuthRepository {
     override suspend fun signIn(activity: Activity): User? {
