@@ -7,11 +7,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
-import ve.com.teeac.svgs.authentication.data.data_source.AuthenticationOAuthByFirebase
+import ve.com.teeac.svgs.authentication.data.data_source.OAuthFirebase
+import ve.com.teeac.svgs.authentication.data.data_source.OAuthRemoteUser
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
+import ve.com.teeac.svgs.authentication.data.repository.OAuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
+import ve.com.teeac.svgs.authentication.domain.repositories.OAuthRepository
+import ve.com.teeac.svgs.authentication.domain.use_case.OAuthUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
-import ve.com.teeac.svgs.authentication.domain.use_case.SignInTwitterUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignUpByEmailAndPasswordUseCase
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -24,21 +27,6 @@ object AppModule {
     fun providerAuthFirebase(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
-
-//    @DefaultDispatcher
-//    @Provides
-//    fun providesCoroutineScope(): CoroutineScope {
-//        // Run this code when providing an instance of CoroutineScope
-//        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
-//    }
-//
-//    @IoDispatcher
-//    @Provides
-//    fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
-//
-//    @MainDispatcher
-//    @Provides
-//    fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Singleton
     @Provides
@@ -71,36 +59,31 @@ object AppModule {
             .build()
     }
 
-    @AuthTwitter
+    @Singleton
     @Provides
-    fun providesAuthenticationOAuthByFirebase(
+    fun providesOAuthFirebase(
         firebaseAuth: FirebaseAuth,
         @AuthTwitter oAuthProvider: OAuthProvider
-    ): AuthenticationOAuthByFirebase {
-        return AuthenticationOAuthByFirebase(firebaseAuth, oAuthProvider)
+    ): OAuthFirebase {
+        return OAuthFirebase(firebaseAuth, oAuthProvider)
     }
 
-    @AuthTwitter
+    @Singleton
     @Provides
-    fun providesSignTwitterUseCase(
-        @AuthTwitter auth: AuthenticationOAuthByFirebase
-    ): SignInTwitterUseCase {
-        return SignInTwitterUseCase(auth)
+    fun providesOAuthRepositoryImpl(
+        oAuth: OAuthRemoteUser
+    ): OAuthRepositoryImpl {
+        return OAuthRepositoryImpl(oAuth)
+    }
+
+    @Provides
+    fun providesOAuthUseCase(
+        repository: OAuthRepository
+    ): OAuthUseCase {
+        return OAuthUseCase(repository)
     }
 }
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class AuthTwitter
-
-// @Retention(AnnotationRetention.BINARY)
-// @Qualifier
-// annotation class DefaultDispatcher
-//
-// @Retention(AnnotationRetention.BINARY)
-// @Qualifier
-// annotation class IoDispatcher
-//
-// @Retention(AnnotationRetention.BINARY)
-// @Qualifier
-// annotation class MainDispatcher

@@ -6,20 +6,17 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.tasks.await
-import ve.com.teeac.svgs.authentication.data.models.UserInfo
-import ve.com.teeac.svgs.di.AuthTwitter
-import javax.inject.Inject
+import ve.com.teeac.svgs.authentication.data.models.User
 
-class AuthenticationOAuthByFirebase @Inject constructor(
+abstract class OAuthRemoteUser(
     private val auth: FirebaseAuth,
-    @AuthTwitter private val provider: OAuthProvider
+    private val provider: OAuthProvider
 ) {
-
-    suspend fun signIn(activity: Activity): UserInfo? {
+    suspend fun signIn(activity: Activity): User? {
 
         val task = getTask(activity).await()
         return task?.let {
-            convertFirebaseUserToUserInfo(task.user!!)
+            it.user?.convertFirebaseUserToUserInfo()
         }
     }
 

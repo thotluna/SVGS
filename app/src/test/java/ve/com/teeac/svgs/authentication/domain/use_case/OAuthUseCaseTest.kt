@@ -9,21 +9,27 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.data.data_source.AuthenticationOAuthByFirebase
-import ve.com.teeac.svgs.authentication.data.models.UserInfo
+import ve.com.teeac.svgs.authentication.data.data_source.OAuthRemoteUser
+import ve.com.teeac.svgs.authentication.data.models.User
+import ve.com.teeac.svgs.authentication.data.repository.OAuthRepositoryImpl
+import ve.com.teeac.svgs.authentication.domain.repositories.OAuthRepository
 
 @ExperimentalCoroutinesApi
-class SignInTwitterUseCaseTest {
+class OAuthUseCaseTest {
 
     @MockK(relaxed = true)
-    lateinit var auth: AuthenticationOAuthByFirebase
+    lateinit var auth: OAuthRemoteUser
 
     @MockK(relaxed = true)
     lateinit var activity: Activity
 
+    lateinit var repository: OAuthRepository
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
+
+        repository = OAuthRepositoryImpl(auth)
     }
 
     @After
@@ -34,7 +40,7 @@ class SignInTwitterUseCaseTest {
     @Test
     fun signIn() = runTest {
 
-        val expected = UserInfo(
+        val expected = User(
             displayName = "displayName",
             email = "email",
             token = "token"
@@ -42,7 +48,7 @@ class SignInTwitterUseCaseTest {
 
         coEvery { auth.signIn(any()) } returns expected
 
-        val userInfo = SignInTwitterUseCase(auth)(activity)
+        val userInfo = OAuthUseCase(repository)(activity)
 
         assertEquals(expected, userInfo)
 

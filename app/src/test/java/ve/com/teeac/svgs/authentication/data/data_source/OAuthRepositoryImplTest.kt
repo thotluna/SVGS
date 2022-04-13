@@ -14,10 +14,10 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.data.models.UserInfo
+import ve.com.teeac.svgs.authentication.data.models.User
 
 @ExperimentalCoroutinesApi
-class AuthenticationOAuthByFirebaseTest {
+class OAuthRepositoryImplTest {
 
     @MockK
     lateinit var auth: FirebaseAuth
@@ -43,14 +43,14 @@ class AuthenticationOAuthByFirebaseTest {
     @MockK
     private lateinit var tokenResult: GetTokenResult
 
-    private lateinit var authenticationOAuthByFirebase: AuthenticationOAuthByFirebase
+    private lateinit var OAuthByFirebaseImpl: OAuthFirebase
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         mockkStatic("kotlinx.coroutines.tasks.TasksKt")
 
-        authenticationOAuthByFirebase = AuthenticationOAuthByFirebase(auth, provider)
+        OAuthByFirebaseImpl = OAuthFirebase(auth, provider)
     }
 
     @After
@@ -84,9 +84,9 @@ class AuthenticationOAuthByFirebaseTest {
 
         every { tokenResult.token } returns "token"
 
-        val expected = UserInfo("Test", "email", "token")
+        val expected = User("Test", "email", "token")
 
-        val result = authenticationOAuthByFirebase.signIn(activity)
+        val result = OAuthByFirebaseImpl.signIn(activity)
 
         assertEquals(expected, result)
     }
@@ -104,7 +104,7 @@ class AuthenticationOAuthByFirebaseTest {
 
         every { authResult.user } returns null
 
-        val result = authenticationOAuthByFirebase.signIn(activity)
+        val result = OAuthByFirebaseImpl.signIn(activity)
 
         assertNull(result)
     }
@@ -136,9 +136,9 @@ class AuthenticationOAuthByFirebaseTest {
 
         every { tokenResult.token } returns "token"
 
-        val expected = UserInfo("Test", "email", "token")
+        val expected = User("Test", "email", "token")
 
-        val result = authenticationOAuthByFirebase.signIn(activity)
+        val result = OAuthByFirebaseImpl.signIn(activity)
 
         assertEquals(expected, result)
     }

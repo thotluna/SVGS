@@ -10,7 +10,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
-import ve.com.teeac.svgs.authentication.data.models.UserInfo
+import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 
@@ -40,7 +40,7 @@ class AuthRepositoryImplTest {
     fun signUpByEmailAndPassword() = runTest {
         val email = "abc1@gmail.com"
         val password = "1aA@2345"
-        val user: UserInfo? = repository.signUpByEmailAndPassword(email, password)
+        val user: User? = repository.signUpByEmailAndPassword(email, password)
         assertNotNull(user)
         assertNotNull(user!!.token)
         assertNull(user.displayName)
@@ -74,7 +74,7 @@ class AuthRepositoryImplTest {
         val password = "3aA@2345"
         repository.signUpByEmailAndPassword(email, password)
         repository.signOut()
-        val user: UserInfo? = repository.signInByEmailAndPassword(email, password)
+        val user: User? = repository.signInByEmailAndPassword(email, password)
         assertNotNull(user)
         assertNotNull(user!!.token)
         assertNull(user.displayName)
@@ -123,7 +123,7 @@ class AuthRepositoryImplTest {
         val email = "abc6@gmail.com"
         val password = "6aA@2345"
 
-        var user: UserInfo? = repository.authStateChanges().first()
+        var user: User? = repository.authStateChanges().first()
         assertNull(user)
         repository.signUpByEmailAndPassword(email, password)
         user = repository.authStateChanges().first()
