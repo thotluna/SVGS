@@ -14,6 +14,7 @@ buildscript {
         mockk_version = "1.12.0"
         navigation_version = '2.4.1'
         ui_version = '1.2.0-alpha06'
+        androidXTestVersion = '1.4.0'
         splash_version = '1.0.0-beta02'
     }
     dependencies {
@@ -33,6 +34,8 @@ plugins {
 configurations {
     ktlint
 }
+
+
 
 dependencies {
     ktlint("com.pinterest:ktlint:0.44.0") {
