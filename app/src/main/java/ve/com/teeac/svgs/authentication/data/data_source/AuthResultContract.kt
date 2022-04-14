@@ -47,3 +47,4 @@ class AuthResultContract : ActivityResultContract<Int, Credentials?>() {
         return GoogleSignIn.getClient(context, signInOptions)
     }
 }
+

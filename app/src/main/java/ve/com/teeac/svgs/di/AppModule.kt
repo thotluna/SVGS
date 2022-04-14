@@ -15,6 +15,7 @@ import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import ve.com.teeac.svgs.authentication.domain.repositories.OAuthRepository
 import ve.com.teeac.svgs.authentication.domain.use_case.OAuthUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
+import ve.com.teeac.svgs.authentication.domain.use_case.SignInTwitterUseCase
 import ve.com.teeac.svgs.authentication.domain.use_case.SignUpByEmailAndPasswordUseCase
 import javax.inject.Qualifier
 import javax.inject.Singleton
