@@ -8,7 +8,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
-import ve.com.teeac.svgs.authentication.data.models.UserInfo
+import ve.com.teeac.svgs.authentication.data.models.User
+import ve.com.teeac.svgs.authentication.data.utils.convertFirebaseUserToUserInfo
 import ve.com.teeac.svgs.core.exceptions.AuthenticationException
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject
@@ -20,11 +21,11 @@ class AuthRemoteUser @Inject constructor(
     private val externalScope: CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    suspend fun signUpByEmailAndPassword(email: String, password: String): UserInfo? {
+    suspend fun signUpByEmailAndPassword(email: String, password: String): User? {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
             if (auth.currentUser == null) throw AuthenticationException("Fail create user")
-            convertFirebaseUserToUserInfo(auth.currentUser!!)
+            auth.currentUser?.convertFirebaseUserToUserInfo()
         } catch (e: FirebaseAuthUserCollisionException) {
             Timber.d("The user is already registered.")
             ExceptionManager.getInstance().setException("The user is already registered.")
@@ -36,12 +37,12 @@ class AuthRemoteUser @Inject constructor(
         }
     }
 
-    suspend fun signInByEmailAndPassword(email: String, password: String): UserInfo? {
+    suspend fun signInByEmailAndPassword(email: String, password: String): User? {
 
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
             if (auth.currentUser == null) throw AuthenticationException("Fail authentication")
-            convertFirebaseUserToUserInfo(auth.currentUser!!)
+            auth.currentUser?.convertFirebaseUserToUserInfo()
         } catch (e: FirebaseAuthInvalidUserException) {
             Timber.d("Fail authentication")
             ExceptionManager.getInstance().setException("Fail credentials")
@@ -57,10 +58,9 @@ class AuthRemoteUser @Inject constructor(
         }
     }
 
-    fun authStateChanges(): SharedFlow<UserInfo?> {
+    fun authStateChanges(): SharedFlow<User?> {
         return callbackFlow {
             val authStateListener: ((FirebaseAuth) -> Unit) = { auth ->
-                Timber.d(auth.currentUser?.uid.toString())
                 trySend(auth)
             }
             auth.addAuthStateListener(authStateListener)
@@ -68,9 +68,7 @@ class AuthRemoteUser @Inject constructor(
         }.catch {
             Timber.d("Error. Update current user")
         }.map { authentication ->
-            authentication.currentUser?.let { firebaseUser ->
-                convertFirebaseUserToUserInfo(firebaseUser)
-            }
+            authentication.currentUser?.convertFirebaseUserToUserInfo()
         }.shareIn(
             scope = externalScope,
             replay = 1,
@@ -80,11 +78,11 @@ class AuthRemoteUser @Inject constructor(
 
     fun signOut() = auth.signOut()
 
-    suspend fun authenticationWithCredential(idToken: String, accessToken: String?): UserInfo? {
+    suspend fun authenticationWithCredential(idToken: String, accessToken: String?): User? {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, accessToken)
             auth.signInWithCredential(credential).await()
-            convertFirebaseUserToUserInfo(auth.currentUser!!)
+            auth.currentUser?.convertFirebaseUserToUserInfo()
         } catch (e: IllegalArgumentException) {
             Timber.d(e.message)
             ExceptionManager.getInstance().setException(e.message!!)

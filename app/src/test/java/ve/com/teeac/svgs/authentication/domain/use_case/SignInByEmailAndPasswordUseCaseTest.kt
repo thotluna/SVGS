@@ -21,7 +21,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
-import ve.com.teeac.svgs.authentication.data.models.UserInfo
+import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
@@ -107,7 +107,7 @@ class SignInByEmailAndPasswordUseCaseTest {
         every { currentUser.displayName } returns displayName
         every { currentUser.email } returns email
 
-        val expected = UserInfo(displayName, email, token)
+        val expected = User(displayName, email, token)
 
         val userInfo = useCase(email, password)
 

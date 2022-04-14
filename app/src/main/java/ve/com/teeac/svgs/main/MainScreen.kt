@@ -7,7 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import ve.com.teeac.svgs.authentication.data.models.UserInfo
+import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.presentation.AuthenticationScreen
 import ve.com.teeac.svgs.navigation.AppGraph
 
@@ -38,7 +38,7 @@ fun MainContainer(
 @Composable
 fun Content(
     modifier: Modifier = Modifier,
-    userAuthenticated: UserInfo?
+    userAuthenticated: User?
 ) {
     when (userAuthenticated) {
         null -> AuthenticationScreen()

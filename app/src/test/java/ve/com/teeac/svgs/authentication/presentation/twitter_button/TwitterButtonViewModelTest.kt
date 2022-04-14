@@ -13,14 +13,14 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.domain.use_case.SignInTwitterUseCase
+import ve.com.teeac.svgs.authentication.domain.use_case.OAuthUseCase
 
 @DelicateCoroutinesApi
 @ExperimentalCoroutinesApi
 class TwitterButtonViewModelTest {
 
     @MockK
-    lateinit var useCase: SignInTwitterUseCase
+    lateinit var useCase: OAuthUseCase
 
     @MockK
     lateinit var activity: Activity

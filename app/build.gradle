@@ -29,6 +29,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -52,6 +53,8 @@ android {
         }
     }
 }
+
+
 
 dependencies {
 
@@ -100,4 +103,5 @@ dependencies {
     implementation platform("com.google.firebase:firebase-bom:$firebase_version")
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
+
 }
