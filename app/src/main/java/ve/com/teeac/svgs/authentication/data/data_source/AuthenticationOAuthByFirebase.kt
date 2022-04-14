@@ -15,7 +15,6 @@ class AuthenticationOAuthByFirebase @Inject constructor(
     private val auth: FirebaseAuth,
     @AuthTwitter private val provider: OAuthProvider
 ) {
-
     suspend fun signIn(activity: Activity): User? {
 
         val task = getTask(activity).await()

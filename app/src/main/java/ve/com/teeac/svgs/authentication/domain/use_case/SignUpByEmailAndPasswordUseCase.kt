@@ -12,7 +12,7 @@ class SignUpByEmailAndPasswordUseCase @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    suspend operator fun invoke(email: String, password: String): User? {
+  suspend operator fun invoke(email: String, password: String): User? {
         return withContext(ioDispatcher) {
             return@withContext repository.signUpByEmailAndPassword(email, password)
         }
