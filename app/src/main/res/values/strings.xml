@@ -2,12 +2,15 @@
     <string name="app_name">SGGS</string>
     <string name="service_control_and_management_system">Service Control and Management System</string>
     <string name="auth_google">Authentication with Google</string>
-    <string name="sing_in">Sing In</string>
-    <string name="sing_up">Sing Up</string>
+    <string name="sing_in">Sign In</string>
+    <string name="sing_up">Sign Up</string>
     <string name="auth_with_twitter">with Twitter</string>
     <string name="auth_with_google">with Google</string>
     <string name="move_to_sing_up">New here? Sing Up</string>
     <string name="move_to_sing_in">You are already a user? Sing In</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="default_app_client_id">661147426121-kbiulut380qj1o60jiuppejteossm893.apps.googleusercontent.com</string>
+    <string name="sign_username">Username</string>
+    <string name="sign_password">Password</string>
+    <string name="sign_confirm_password">Confirm Password</string>
 </resources>

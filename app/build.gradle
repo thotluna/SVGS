@@ -70,8 +70,6 @@ hilt {
     enableAggregatingTask = true
 }
 
-
-
 dependencies {
 
     //androidx
@@ -80,7 +78,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-compose:$navigation_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    implementation "androidx.activity:activity-compose:activity_version"
+    implementation 'androidx.activity:activity-compose:1.4.0'
     implementation "androidx.core:core-splashscreen:$splash_version"
 
     //compose
@@ -90,13 +88,13 @@ dependencies {
 
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+//    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_version"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //google services
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.1-native-mt'
     implementation platform("com.google.firebase:firebase-bom:$firebase_version")
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
@@ -110,7 +108,7 @@ dependencies {
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     //Roboelectric compose
-    testImplementation 'org.robolectric:robolectric:4.7.3'
+    testImplementation 'org.robolectric:robolectric:4.8-alpha-1'
     testImplementation 'androidx.compose.ui:ui-test-junit4:1.1.1'
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.1.1'
     // For Robolectric tests.
