@@ -18,9 +18,9 @@ buildscript {
         splash_version = '1.0.0-beta02'
     }
     dependencies {
-        // other plugins...
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath "com.google.gms:google-services:$google_services_version"
+        classpath "org.jacoco:org.jacoco.core:0.8.8"
     }
 }
 
@@ -34,8 +34,6 @@ plugins {
 configurations {
     ktlint
 }
-
-
 
 dependencies {
     ktlint("com.pinterest:ktlint:0.44.0") {

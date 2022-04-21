@@ -5,6 +5,53 @@ plugins {
     id "kotlin-kapt"
     id "dagger.hilt.android.plugin"
     id 'com.google.gms.google-services'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = '0.8.8'
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+
+    reports {
+        xml.enabled(true)
+        html.enabled(true)
+    }
+
+    def fileFilter = ['**/R.class',
+                      '**/R$*.class',
+                      '**/BuildConfig.*',
+                      '**/Manifest*.*',
+                      '**/*Test*.*',
+                      'android/**/*.*',
+                      "*_*Factory.java",
+                      "*_ComponentTreeDeps.java",
+                      "*_Factory.java",
+                      "*_GeneratedInjector.java",
+                      "*_HiltComponents.java",
+                      "*_HiltModules.java",
+                      "*_HiltModules_BindsModule.java",
+                      "*_HiltModules_KeyModule.java",
+                      "*_MembersInjector.java",
+                      "*_ProvideFactory.java",
+                      "*_SingletonC.java",
+                      "*_TestComponentDataSupplier.java",
+                      "Hilt_*.java",
+                      "_test_*.java"]
+    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def mainSrc = "$project.projectDir/src/main/kotlin"
+
+    sourceDirectories.from files([mainSrc])
+    classDirectories.from files([debugTree])
+    executionData.from fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+    ])
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
 
 android {
@@ -23,15 +70,29 @@ android {
         }
     }
 
+
     testOptions {
+
+        animationsDisabled true
+
         unitTests {
             includeAndroidResources = true
+            returnDefaultValues = true
+        }
+        unitTests.all {
+            systemProperty 'robolectric.enabledSdks', '32'
+            jvmArgs '-noverify'
         }
     }
 
+
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
+            testCoverageEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -58,8 +119,6 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
-
 }
 
 kapt {
@@ -88,7 +147,6 @@ dependencies {
 
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-//    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_version"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
@@ -126,7 +184,6 @@ dependencies {
     // For instrumented tests hilt.
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
-
 
 
 }
