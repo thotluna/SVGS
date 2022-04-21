@@ -12,7 +12,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
+import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteFirebase
 import ve.com.teeac.svgs.authentication.data.models.Credentials
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
@@ -43,7 +43,7 @@ class SignInWithGoogleUseCaseTest {
     private val displayName = "any"
     private val token = "123546132"
 
-    private lateinit var authRemoteUser: AuthRemoteUser
+    private lateinit var authRemoteUser: AuthRemoteFirebase
     private lateinit var repository: AuthRepository
     private lateinit var useCase: SignInWithGoogleUseCase
 
@@ -55,7 +55,7 @@ class SignInWithGoogleUseCaseTest {
         mockkStatic("kotlinx.coroutines.tasks.TasksKt")
         mockkStatic(GoogleAuthProvider::class)
 
-        authRemoteUser = AuthRemoteUser(firebaseAuth)
+        authRemoteUser = AuthRemoteFirebase(firebaseAuth)
         repository = AuthRepositoryImpl(authRemoteUser)
         useCase = SignInWithGoogleUseCase(repository)
     }

@@ -9,7 +9,7 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
+import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteFirebase
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
@@ -23,7 +23,7 @@ class AuthRepositoryImplTest {
     @Before
     fun setUp() {
         repository = AuthRepositoryImpl(
-            AuthRemoteUser(FirebaseAuth.getInstance())
+            AuthRemoteFirebase(FirebaseAuth.getInstance())
         )
     }
 

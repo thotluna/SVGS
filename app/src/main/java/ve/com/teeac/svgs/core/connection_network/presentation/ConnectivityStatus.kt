@@ -5,18 +5,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ve.com.teeac.svgs.core.connection_network.models.ConnectionState
-import ve.com.teeac.svgs.main.MainScreen
 
 @ExperimentalComposeUiApi
 @ExperimentalCoroutinesApi
 @Composable
-fun ConnectivityStatus() {
+fun ConnectivityStatus(
+    content: @Composable () -> Unit
+) {
     val connection by connectivityState()
 
     val isConnected = connection === ConnectionState.Available
 
     if (isConnected) {
-        MainScreen()
+        content()
     } else {
         NoConnectionScreen()
     }

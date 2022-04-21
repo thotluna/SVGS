@@ -8,7 +8,7 @@ import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.tasks.await
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.data.utils.convertFirebaseUserToUserInfo
-import ve.com.teeac.svgs.di.AuthTwitter
+import ve.com.teeac.svgs.authentication.di.AuthTwitter
 import javax.inject.Inject
 
 class AuthenticationOAuthByFirebase @Inject constructor(

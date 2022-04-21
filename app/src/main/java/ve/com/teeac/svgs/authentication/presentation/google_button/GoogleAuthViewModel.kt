@@ -16,6 +16,8 @@ class GoogleAuthViewModel @Inject constructor(
     private val useCase: SignInWithGoogleUseCase
 ) : ViewModel() {
 
+    val signInRequestCode = 1534
+
     fun singInGoogle(credentials: Credentials?) {
         viewModelScope.launch {
             credentials?.idToken?.let {
