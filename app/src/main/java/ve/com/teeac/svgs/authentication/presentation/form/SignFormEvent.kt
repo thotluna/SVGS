@@ -8,4 +8,5 @@ sealed class SignFormEvent {
     data class ChangedConfirmPassword(val password: String) : SignFormEvent()
     object ChangedConfirmPasswordVisibility : SignFormEvent()
     object ToggleForm : SignFormEvent()
+    object Submit : SignFormEvent()
 }

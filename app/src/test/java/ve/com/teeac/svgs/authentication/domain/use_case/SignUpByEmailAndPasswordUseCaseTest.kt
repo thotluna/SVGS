@@ -20,7 +20,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
+import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteFirebase
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
@@ -50,7 +50,7 @@ class SignUpByEmailAndPasswordUseCaseTest {
     @MockK
     private lateinit var authResult: AuthResult
 
-    private lateinit var authRemoteUser: AuthRemoteUser
+    private lateinit var authRemoteUser: AuthRemoteFirebase
     private lateinit var repository: AuthRepository
     private lateinit var useCase: SignUpByEmailAndPasswordUseCase
 
@@ -66,7 +66,7 @@ class SignUpByEmailAndPasswordUseCaseTest {
         mockkStatic("kotlinx.coroutines.tasks.TasksKt")
 
 //        firebaseMock = mockk(relaxed = true)
-        authRemoteUser = AuthRemoteUser(firebaseAuth)
+        authRemoteUser = AuthRemoteFirebase(firebaseAuth)
         repository = AuthRepositoryImpl(authRemoteUser)
         useCase = SignUpByEmailAndPasswordUseCase(repository)
     }

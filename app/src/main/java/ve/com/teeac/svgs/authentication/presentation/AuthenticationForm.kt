@@ -14,6 +14,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ve.com.teeac.svgs.authentication.presentation.form.SignForm
@@ -21,13 +22,20 @@ import ve.com.teeac.svgs.authentication.presentation.google_button.GoogleButton
 import ve.com.teeac.svgs.authentication.presentation.twitter_button.TwitterButton
 
 @ExperimentalComposeUiApi
+@Preview
 @Composable
 fun AuthenticationForm(
     modifier: Modifier = Modifier,
-    viewModel: SignViewModel = hiltViewModel(),
+    viewModel: SignViewModel = hiltViewModel()
 ) {
 
     val scrollState = rememberScrollState()
+
+    var isLoading = viewModel.isLoading.value
+
+    fun handleSubmit() {
+        viewModel.onEvent(SignEvent.OnLoading)
+    }
 
     Surface(
         modifier = modifier
@@ -39,28 +47,25 @@ fun AuthenticationForm(
                 )
             )
     ) {
-        Box(modifier = Modifier.padding(16.dp)) {
+        Box(
+            modifier = Modifier
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Column(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
+//                    .align(Alignment.TopCenter)
                     .scrollable(scrollState, orientation = Orientation.Vertical)
             ) {
                 TitleForm()
                 SignForm(
-                    onSubmit = { username, password ->
-                        viewModel.onEvent(SingEvent.Sing(username, password))
-                    },
-                    enabled = !viewModel.isLoading.value
+                    onSubmit = { handleSubmit() },
+                    enabled = !isLoading
                 )
-
                 SocialButtons(
-                    isVisible = viewModel.isSingIn.value,
-                    isDisable = viewModel.isLoading.value,
-                    onLoading = {
-                        viewModel.onEvent(
-                            SingEvent.OnLoading
-                        )
-                    }
+                    enabled = !isLoading,
+                    onLoading = { isLoading = true },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -81,21 +86,17 @@ fun TitleForm() {
 
 @Composable
 private fun SocialButtons(
-    isVisible: Boolean,
-    isDisable: Boolean,
     onLoading: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
-    if (isVisible) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            GoogleButton(onLoading = onLoading, isDisable = isDisable)
-            Text(text = "Or")
-            TwitterButton(onLoading = onLoading, isDisable = isDisable)
-        }
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        GoogleButton(onClick = onLoading, enabled = enabled)
+        Text(text = "Or")
+        TwitterButton(onLoading = onLoading, enabled = enabled)
     }
 }

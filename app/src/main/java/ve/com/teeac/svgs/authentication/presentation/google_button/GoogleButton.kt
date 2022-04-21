@@ -18,13 +18,12 @@ import ve.com.teeac.svgs.authentication.data.data_source.AuthResultContract
 
 @Composable
 fun GoogleButton(
-    onLoading: () -> Unit,
-    isDisable: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     viewModel: GoogleAuthViewModel = hiltViewModel(),
-) {
 
-    val signInRequestCode = 1534
+) {
 
     val authResultLauncher =
         rememberLauncherForActivityResult(contract = AuthResultContract()) { credentials ->
@@ -36,16 +35,16 @@ fun GoogleButton(
         contentColor = MaterialTheme.colors.surface
     )
 
-    fun click() {
-        authResultLauncher.launch(signInRequestCode)
-        onLoading()
+    fun handleClick() {
+        authResultLauncher.launch(viewModel.signInRequestCode)
+        onClick()
     }
 
     Button(
-        onClick = { click() },
+        onClick = { handleClick() },
         modifier = modifier,
         colors = colorGoogle,
-        enabled = !isDisable,
+        enabled = enabled,
         shape = RoundedCornerShape(24.dp)
     ) {
         Icon(
@@ -60,5 +59,5 @@ fun GoogleButton(
 @Preview
 @Composable
 private fun GoogleButtonPreview() {
-    GoogleButton({}, isDisable = false)
+    GoogleButton({}, enabled = false)
 }

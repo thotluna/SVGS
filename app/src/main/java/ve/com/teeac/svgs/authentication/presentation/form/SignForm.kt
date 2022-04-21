@@ -36,7 +36,7 @@ import ve.com.teeac.svgs.core.presentation.FieldText
 fun SignForm(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onSubmit: (username: String, password: String) -> Unit,
+    onSubmit: () -> Unit,
     viewModel: SignFormViewModel = hiltViewModel()
 ) {
 
@@ -51,8 +51,9 @@ fun SignForm(
         if (state.hasError || !enabled) return
 
         keyboardController?.hide()
-        viewModel.onEvent(SignFormEvent.ChangedIsValidate)
-        onSubmit(state.username, state.password)
+
+        viewModel.onEvent(SignFormEvent.Submit)
+        onSubmit()
     }
 
     Column(
@@ -196,6 +197,6 @@ object TestTags {
 @Composable
 private fun SignFormPreview() {
     SignForm(
-        onSubmit = { _, _ -> }
+        onSubmit = {}
     )
 }

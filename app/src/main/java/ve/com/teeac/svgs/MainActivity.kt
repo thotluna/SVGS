@@ -7,6 +7,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ve.com.teeac.svgs.core.connection_network.presentation.ConnectivityStatus
+import ve.com.teeac.svgs.main.MainScreen
 import ve.com.teeac.svgs.ui.theme.SVGSTheme
 
 @ExperimentalComposeUiApi
@@ -19,7 +20,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SVGSTheme {
-                ConnectivityStatus()
+                ConnectivityStatus() {
+                    MainScreen()
+                }
             }
         }
     }

@@ -4,7 +4,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.text.input.ImeAction
-import org.junit.Assert.assertEquals
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.confirmVerified
+import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -12,16 +19,28 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
+import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.domain.ValidationField
+import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
+import ve.com.teeac.svgs.authentication.domain.use_case.SignUpByEmailAndPasswordUseCase
 
+@ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 @ExperimentalComposeUiApi
 @RunWith(RobolectricTestRunner::class)
-
 @LooperMode(LooperMode.Mode.PAUSED)
 class SignFormTest {
 
-    @get: Rule
+    @get:Rule(order = 1)
     val compose = createComposeRule()
+
+    @MockK(relaxed = true)
+    lateinit var inUseCase: SignInByEmailAndPasswordUseCase
+
+    @MockK
+    lateinit var upUseCase: SignUpByEmailAndPasswordUseCase
+
+    private lateinit var viewModel: SignFormViewModel
 
     private val username = "username@email.com"
     private val password = "1aA#2345"
@@ -29,12 +48,20 @@ class SignFormTest {
     @Before
     @Throws(Exception::class)
     fun setUp() {
+
+        MockKAnnotations.init(this, relaxUnitFun = true)
+
+        viewModel = SignFormViewModel(upUseCase, inUseCase)
+
         ShadowLog.stream = System.out
     }
 
     private fun setComposeGeneric() {
         compose.setContent {
-            SignForm(onSubmit = { _, _ -> })
+            SignForm(
+                onSubmit = { },
+                viewModel = viewModel
+            )
         }
     }
 
@@ -261,8 +288,9 @@ class SignFormTest {
     fun `should be all desable`() {
         compose.setContent {
             SignForm(
-                onSubmit = { _, _ -> },
-                enabled = false
+                onSubmit = { },
+                enabled = false,
+                viewModel = viewModel
             )
         }
 
@@ -509,16 +537,67 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be return user and password correct`() {
+    fun `should not do anything when I click sign in with errors`() {
         compose.setContent {
-            SignForm(onSubmit = { user, pass ->
-                assertEquals(username, user)
-                assertEquals(password, pass)
-            })
+            SignForm(
+                onSubmit = { },
+                viewModel = viewModel
+            )
         }
+
+        val user = User(
+            displayName = "test",
+            email = username,
+            token = "token",
+        )
+
+        coEvery { inUseCase(any(), any()) } returns user
 
         compose.onNodeWithText("Sign In")
             .performClick()
+
+        coVerify(exactly = 0) { inUseCase(username, password) }
+    }
+
+    @Test
+    fun `should not do anything when I click sign up with errors`() {
+        compose.setContent {
+            SignForm(
+                onSubmit = { },
+                viewModel = viewModel
+            )
+        }
+
+        val user = User(
+            displayName = "test",
+            email = username,
+            token = "token",
+        )
+
+        coEvery { upUseCase(any(), any()) } returns user
+
+        compose.onNodeWithText("Sign In")
+            .performClick()
+
+        coVerify(exactly = 0) { upUseCase(username, password) }
+    }
+
+    @Test
+    fun `should be return user and password correct in sign in`() = runTest {
+        compose.setContent {
+            SignForm(
+                onSubmit = { },
+                viewModel = viewModel
+            )
+        }
+
+        val user = User(
+            displayName = "test",
+            email = username,
+            token = "token",
+        )
+
+        coEvery { inUseCase(any(), any()) } returns user
 
         compose.onNodeWithText("Username")
             .performTextInput(username)
@@ -529,13 +608,43 @@ class SignFormTest {
         compose.onNodeWithText("Sign In")
             .performClick()
 
+        coVerify(exactly = 1) { inUseCase(username, password) }
+        confirmVerified(inUseCase)
+    }
+
+    @Test
+    fun `should be return user and password correct in sign up`() = runTest {
+        compose.setContent {
+            SignForm(
+                onSubmit = { },
+                viewModel = viewModel
+            )
+        }
+
+        val user = User(
+            displayName = "test",
+            email = username,
+            token = "token",
+        )
+
+        coEvery { upUseCase(any(), any()) } returns user
+
         compose.onNodeWithText("New here? Sing Up")
             .performClick()
+
+        compose.onNodeWithText("Username")
+            .performTextInput(username)
+
+        compose.onNodeWithText("Password")
+            .performTextInput(password)
 
         compose.onNodeWithText("Confirm Password")
             .performTextInput(password)
 
         compose.onNodeWithText("Sign Up")
             .performClick()
+
+        coVerify(exactly = 1) { upUseCase(username, password) }
+        confirmVerified(upUseCase)
     }
 }

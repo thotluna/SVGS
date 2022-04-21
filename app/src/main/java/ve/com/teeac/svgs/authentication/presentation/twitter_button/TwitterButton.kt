@@ -18,8 +18,8 @@ import ve.com.teeac.svgs.R
 @Composable
 fun TwitterButton(
     onLoading: () -> Unit,
-    isDisable: Boolean,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     viewModel: TwitterButtonViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -37,7 +37,7 @@ fun TwitterButton(
     Button(
         onClick = { click() },
         modifier = modifier,
-        enabled = !isDisable,
+        enabled = enabled,
         colors = colorTwitter, shape = RoundedCornerShape(24.dp)
     ) {
         Icon(

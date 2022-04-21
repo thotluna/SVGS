@@ -20,5 +20,5 @@ data class SignFormState(
 
     val hasError = usernameErrors.isNotEmpty() ||
         passwordErrors.isNotEmpty() ||
-        confirmPasswordErrors.isNotEmpty()
+        (!isSignIn && confirmPasswordErrors.isNotEmpty())
 }

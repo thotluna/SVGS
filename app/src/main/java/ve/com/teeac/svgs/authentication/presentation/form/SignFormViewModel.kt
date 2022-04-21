@@ -3,9 +3,18 @@ package ve.com.teeac.svgs.authentication.presentation.form
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
+import ve.com.teeac.svgs.authentication.domain.use_case.SignUpByEmailAndPasswordUseCase
 import javax.inject.Inject
 
-class SignFormViewModel @Inject constructor() : ViewModel() {
+@HiltViewModel
+class SignFormViewModel @Inject constructor(
+    private val signUpUseCase: SignUpByEmailAndPasswordUseCase,
+    private val signInUseCase: SignInByEmailAndPasswordUseCase
+) : ViewModel() {
 
     private val _state = mutableStateOf(SignFormState())
     val state: State<SignFormState> = _state
@@ -33,6 +42,17 @@ class SignFormViewModel @Inject constructor() : ViewModel() {
             is SignFormEvent.ToggleForm -> _state.value = state.value.copy(
                 isSignIn = !state.value.isSignIn
             )
+            is SignFormEvent.Submit -> sign(state.value.username, state.value.password)
+        }
+    }
+
+    private fun sign(username: String, password: String) {
+        viewModelScope.launch {
+            if (state.value.isSignIn) {
+                signInUseCase(username, password)
+            } else {
+                signUpUseCase(username, password)
+            }
         }
     }
 }

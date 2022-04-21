@@ -7,25 +7,16 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.jetbrains.annotations.TestOnly
-import timber.log.Timber
 import ve.com.teeac.svgs.authentication.domain.use_case.ObserverStatusAuthUseCase
-import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
-import ve.com.teeac.svgs.authentication.domain.use_case.SignUpByEmailAndPasswordUseCase
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject
 
 @HiltViewModel
 class SignViewModel @Inject constructor(
-    private val signUpUseCase: SignUpByEmailAndPasswordUseCase,
-    private val signInUseCase: SignInByEmailAndPasswordUseCase,
     private val observerStatusAuthUseCase: ObserverStatusAuthUseCase
 ) : ViewModel() {
 
     private val exceptionManager = ExceptionManager.getInstance()
-
-    private var _isSingIn = mutableStateOf(true)
-    val isSingIn: State<Boolean> = _isSingIn
 
     private var _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
@@ -46,49 +37,9 @@ class SignViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: SingEvent) {
+    fun onEvent(event: SignEvent) {
         when (event) {
-            is SingEvent.ChangeSing -> onChangeSing()
-            is SingEvent.OnLoading -> _isLoading.value = !isLoading.value
-            is SingEvent.Sing -> onSing(event.username, event.password)
+            is SignEvent.OnLoading -> _isLoading.value = !isLoading.value
         }
-    }
-
-    @TestOnly
-    fun onSing(username: String, password: String) {
-        when (isSingIn.value) {
-            true -> onSingIn(username, password)
-            false -> onSingUp(username, password)
-        }
-        _isLoading.value = true
-    }
-
-    @TestOnly
-    fun onSingUp(username: String, password: String) {
-        viewModelScope.launch {
-            try {
-                signUpUseCase(username, password)
-            } catch (e: Exception) {
-                Timber.d("$e, message: ${e.message}")
-                e.message?.let { exceptionManager.setException(it) }
-                _isLoading.value = false
-            }
-        }
-    }
-
-    private fun onSingIn(username: String, password: String) {
-        viewModelScope.launch {
-            try {
-                signInUseCase(username, password)
-            } catch (e: Exception) {
-                Timber.d("$e, message: ${e.message}")
-                e.message?.let { exceptionManager.setException(it) }
-                _isLoading.value = false
-            }
-        }
-    }
-
-    private fun onChangeSing() {
-        _isSingIn.value = !isSingIn.value
     }
 }
