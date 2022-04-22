@@ -9,14 +9,14 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.data.data_source.AuthenticationOAuthByFirebase
 import ve.com.teeac.svgs.authentication.data.models.User
+import ve.com.teeac.svgs.authentication.domain.repositories.OAuthRepository
 
 @ExperimentalCoroutinesApi
 class SignInTwitterUseCaseTest {
 
     @MockK(relaxed = true)
-    lateinit var auth: AuthenticationOAuthByFirebase
+    lateinit var auth: OAuthRepository
 
     @MockK(relaxed = true)
     lateinit var activity: Activity
