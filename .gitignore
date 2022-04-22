@@ -32,3 +32,4 @@ workers/
 /wrapper/dists/*
 /wrapper/dists/gradle-7.2-bin/2dnblmf4td7x66yl1d74lt32g/gradle-7.2/
 /wrapper/dists/gradle-7.2-bin/2dnblmf4td7x66yl1d74lt32g/
+/app/jacoco.exec

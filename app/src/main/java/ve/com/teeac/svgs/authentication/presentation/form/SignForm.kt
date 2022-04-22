@@ -12,7 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -25,7 +25,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ve.com.teeac.svgs.R
@@ -190,13 +189,4 @@ object TestTags {
     const val SIGN_FIELD_PASSWORD = "TAG_FIELD_PASSWORD"
     const val SIGN_FIELD_PASSWORD_CONFIRM = "TAG_FIELD_PASSWORD_CONFIRM"
     const val SIGN_IN_BUTTON = "Sign in Button"
-}
-
-@ExperimentalComposeUiApi
-@Preview
-@Composable
-private fun SignFormPreview() {
-    SignForm(
-        onSubmit = {}
-    )
 }
