@@ -11,7 +11,8 @@ import timber.log.Timber
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.data.utils.convertFirebaseUserToUserInfo
 import ve.com.teeac.svgs.core.exceptions.AuthenticationException
-import ve.com.teeac.svgs.core.exceptions.ExceptionManager
+import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
+import ve.com.teeac.svgs.core.exceptions.UserCollisionException
 import javax.inject.Inject
 
 class AuthRemoteFirebase @Inject constructor(
@@ -24,37 +25,22 @@ class AuthRemoteFirebase @Inject constructor(
     override suspend fun signUpByEmailAndPassword(email: String, password: String): User? {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
-            if (auth.currentUser == null) throw AuthenticationException("Fail create user")
             auth.currentUser?.convertFirebaseUserToUserInfo()
+                ?: throw AuthenticationException("Fail create user")
         } catch (e: FirebaseAuthUserCollisionException) {
-            Timber.d("The user is already registered.")
-            ExceptionManager.getInstance().setException("The user is already registered.")
-            null
-        } catch (e: Exception) {
-            Timber.d("${e.cause}, message: ${e.message}")
-            ExceptionManager.getInstance().setException(e.message!!)
-            null
+            throw UserCollisionException("The user is already registered.")
         }
     }
 
     override suspend fun signInByEmailAndPassword(email: String, password: String): User? {
-
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
-            if (auth.currentUser == null) throw AuthenticationException("Fail authentication")
             auth.currentUser?.convertFirebaseUserToUserInfo()
+                ?: throw AuthenticationException("Fail authentication")
         } catch (e: FirebaseAuthInvalidUserException) {
-            Timber.d("Fail authentication")
-            ExceptionManager.getInstance().setException("Fail credentials")
-            null
+            throw AuthenticationException("The user is not registered.")
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            Timber.d("Fail authentication")
-            ExceptionManager.getInstance().setException("Fail credentials")
-            null
-        } catch (e: Exception) {
-            Timber.d("$e, message: ${e.message}")
-            ExceptionManager.getInstance().setException(e.message!!)
-            null
+            throw CredentialsFailException("The password or user is incorrect.")
         }
     }
 
@@ -78,19 +64,21 @@ class AuthRemoteFirebase @Inject constructor(
 
     override fun signOut() = auth.signOut()
 
-    override suspend fun authenticationWithCredential(idToken: String, accessToken: String?): User? {
+    override suspend fun authenticationWithCredential(
+        idToken: String,
+        accessToken: String?
+    ): User? {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, accessToken)
             auth.signInWithCredential(credential).await()
             auth.currentUser?.convertFirebaseUserToUserInfo()
-        } catch (e: IllegalArgumentException) {
-            Timber.d(e.message)
-            ExceptionManager.getInstance().setException(e.message!!)
-            null
-        } catch (e: Exception) {
-            Timber.d("${e.cause}, message: ${e.message}")
-            ExceptionManager.getInstance().setException("Fail credentials")
-            null
+                ?: throw AuthenticationException("Fail authentication")
+        } catch (e: FirebaseAuthInvalidUserException) {
+            throw AuthenticationException("The user is not registered o is disabled")
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            throw CredentialsFailException("The credentials are invalid.")
+        } catch (e: FirebaseAuthUserCollisionException) {
+            throw UserCollisionException("The user is already registered.")
         }
     }
 }

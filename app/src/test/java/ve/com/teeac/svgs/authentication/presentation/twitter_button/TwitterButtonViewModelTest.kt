@@ -45,7 +45,7 @@ class TwitterButtonViewModelTest {
     }
 
     @Test
-    fun `signIn with twitter`() = runTest {
+    fun signIn_with_twitter() = runTest {
 
         viewModel.signIn(activity)
 

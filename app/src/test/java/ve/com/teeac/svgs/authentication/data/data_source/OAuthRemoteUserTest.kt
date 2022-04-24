@@ -131,38 +131,4 @@ class OAuthRemoteUserTest {
         verify(exactly = 1) { auth.startActivityForSignInWithProvider(any(), any()) }
         confirmVerified(auth)
     }
-
-//    @Test
-//    fun `should be return User for signInForProvider`() = runTest {
-//
-//        every { auth.pendingAuthResult } returns null
-//        every { auth.startActivityForSignInWithProvider(activity, provider) } returns taskResult
-//
-//        every { taskResult.isSuccessful } returns true
-//        every { taskResult.isComplete } returns true
-//        every { taskResult.isCanceled } returns false
-//        every { taskResult.exception } returns null
-//        every { taskResult.result } returns authResult
-//
-//        every { authResult.user } returns userFirebase
-//
-//        every { userFirebase.uid } returns "123"
-//        every { userFirebase.displayName } returns "Test"
-//        every { userFirebase.email } returns "email"
-//        every { userFirebase.getIdToken(any()) } returns taskToken
-//
-//        every { taskToken.isSuccessful } returns true
-//        every { taskToken.isComplete } returns true
-//        every { taskToken.isCanceled } returns false
-//        every { taskToken.exception } returns null
-//        every { taskToken.result } returns tokenResult
-//
-//        every { tokenResult.token } returns "token"
-//
-//        val expected = User("Test", "email", "token")
-//
-//        val result = remoteUser.signIn(activity)
-//
-//        assertEquals(expected, result)
-//    }
 }

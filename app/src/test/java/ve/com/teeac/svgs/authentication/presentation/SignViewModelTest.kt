@@ -44,12 +44,12 @@ class SignViewModelTest {
     }
 
     @Test
-    fun `inicializate viewModel`() {
+    fun inicializate_viewModel() {
         assertFalse(viewModel.isLoading.value)
     }
 
     @Test
-    fun `should be return isLoading true`() {
+    fun should_be_return_isLoading_true() {
         assertFalse(viewModel.isLoading.value)
         viewModel.onEvent(SignEvent.OnLoading)
         assertTrue(viewModel.isLoading.value)

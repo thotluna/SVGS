@@ -5,54 +5,60 @@ plugins {
     id "kotlin-kapt"
     id "dagger.hilt.android.plugin"
     id 'com.google.gms.google-services'
-    id 'jacoco'
+    id 'kover'
+//    id 'jacoco'
 }
 
-jacoco {
-    toolVersion = '0.8.8'
-}
+//
+//jacoco {
+//    toolVersion = '0.8.8'
+//}
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+//task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+//
+//    reports {
+////        xml.enabled(true)
+//        html.enabled(true)
+//    }
+//
+//    def fileFilter = ['**/R.class',
+//                      '**/R$*.class',
+//                      '**/BuildConfig.*',
+//                      '**/Manifest*.*',
+//                      '**/*Test*.*',
+//                      'android/**/*.*',
+//                      "*_*Factory.java",
+//                      "*_ComponentTreeDeps.java",
+//                      "*_Factory.java",
+//                      "*_GeneratedInjector.java",
+//                      "*_HiltComponents.java",
+//                      "*_HiltModules.java",
+//                      "*_HiltModules_BindsModule.java",
+//                      "*_HiltModules_KeyModule.java",
+//                      "*_MembersInjector.java",
+//                      "*_ProvideFactory.java",
+//                      "*_SingletonC.java",
+//                      "*_TestComponentDataSupplier.java",
+//                      "Hilt_*.java",
+//                      "_test_*.java"]
+//    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+//    def mainSrc = "$project.projectDir/src/main/kotlin"
+//
+//    sourceDirectories.from files([mainSrc])
+//    classDirectories.from files([debugTree])
+//    executionData.from fileTree(dir: project.buildDir, includes: [
+//            'jacoco/testDebugUnitTest.exec'
+////            , 'outputs/code-coverage/connected/*coverage.ec'
+//    ])
+//    doLast {
+//        println "Wrote HTML coverage report to ${reports.html.outputLocation}/index.html"
+//    }
+//}
 
-    reports {
-        xml.enabled(true)
-        html.enabled(true)
-    }
-
-    def fileFilter = ['**/R.class',
-                      '**/R$*.class',
-                      '**/BuildConfig.*',
-                      '**/Manifest*.*',
-                      '**/*Test*.*',
-                      'android/**/*.*',
-                      "*_*Factory.java",
-                      "*_ComponentTreeDeps.java",
-                      "*_Factory.java",
-                      "*_GeneratedInjector.java",
-                      "*_HiltComponents.java",
-                      "*_HiltModules.java",
-                      "*_HiltModules_BindsModule.java",
-                      "*_HiltModules_KeyModule.java",
-                      "*_MembersInjector.java",
-                      "*_ProvideFactory.java",
-                      "*_SingletonC.java",
-                      "*_TestComponentDataSupplier.java",
-                      "Hilt_*.java",
-                      "_test_*.java"]
-    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
-    def mainSrc = "$project.projectDir/src/main/kotlin"
-
-    sourceDirectories.from files([mainSrc])
-    classDirectories.from files([debugTree])
-    executionData.from fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
-}
-
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-    jacoco.excludes = ['jdk.internal.*']
-}
+//tasks.withType(Test) {
+//    jacoco.includeNoLocationClasses = true
+//    jacoco.excludes = ['jdk.internal.*']
+//}
 
 android {
     compileSdk 32
@@ -68,31 +74,67 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        testOptions {
+            unitTests.all {
+                if (name == "testDebugUnitTest") {
+                    kover {
+                        binaryReportFile.set(file("$buildDir/custom/debug-report.bin"))
+                        includes = ['ve.com.teeac.svgs.*']
+                        excludes = [
+                                '**/R.class',
+                                '**/R$*.class',
+                                '**/BuildConfig.*',
+                                '**/Manifest*.*',
+                                '**/*Test*.*',
+                                'android/**/*.*',
+                                "*_*Factory.java",
+                                "*_ComponentTreeDeps.java",
+                                "*_Factory.java",
+                                "*_GeneratedInjector.java",
+                                "*_HiltComponents.java",
+                                "*_HiltModules.java",
+                                "*_HiltModules_BindsModule.java",
+                                "*_HiltModules_KeyModule.java",
+                                "*_MembersInjector.java",
+                                "*_ProvideFactory.java",
+                                "*_SingletonC.java",
+                                "*_TestComponentDataSupplier.java",
+                                "Hilt_*.java",
+                                "_test_*.java"
+                        ]
+                    }
+
+                }
+            }
+        }
     }
 
-
-    testOptions {
-
-        animationsDisabled true
-
-        unitTests {
-            includeAndroidResources = true
-            returnDefaultValues = true
-        }
-        unitTests.all {
-            systemProperty 'robolectric.enabledSdks', '32'
-            jvmArgs '-noverify'
-        }
-    }
+//
+//    testOptions {
+//
+//        animationsDisabled true
+//
+//        unitTests {
+//            includeAndroidResources = true
+//            returnDefaultValues = true
+//        }
+//        unitTests.all {
+//            systemProperty 'robolectric.enabledSdks', '32'
+//            jvmArgs '-noverify'
+//        }
+//    }
 
 
     buildTypes {
-        debug {
-            testCoverageEnabled true
-        }
+//        debug {
+//            debuggable true
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            testCoverageEnabled true
+//        }
         release {
             minifyEnabled false
-            testCoverageEnabled true
+//            testCoverageEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -166,12 +208,11 @@ dependencies {
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     //Roboelectric compose
-    testImplementation 'org.robolectric:robolectric:4.8-alpha-1'
-    testImplementation 'androidx.compose.ui:ui-test-junit4:1.1.1'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest:1.1.1'
+//    testImplementation 'org.robolectric:robolectric:4.8-alpha-1'
+//    testImplementation 'androidx.compose.ui:ui-test-junit4:1.1.1'
+//    debugImplementation 'androidx.compose.ui:ui-test-manifest:1.1.1'
     // For Robolectric tests.
-    testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-    kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+//    kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //implementation test
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -187,3 +228,13 @@ dependencies {
 
 
 }
+
+//configurations.all{
+//    resolutionStrategy {
+//        eachDependency { details ->
+//            if ('org.jacoco' == details.requested.group) {
+//                details.useVersion "0.8.8"
+//            }
+//        }
+//    }
+//}
