@@ -12,6 +12,9 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import ve.com.teeac.svgs.authentication.data.models.User
+import ve.com.teeac.svgs.core.exceptions.AuthenticationException
+import ve.com.teeac.svgs.core.exceptions.CredentialsFailException
+import ve.com.teeac.svgs.core.exceptions.UserCollisionException
 
 @ExperimentalCoroutinesApi
 class OAuthRemoteUserTest {
@@ -121,6 +124,196 @@ class OAuthRemoteUserTest {
         val result = remoteUser.signIn(activity)
 
         assertEquals(expected, result)
+
+        verifySequence {
+            auth.pendingAuthResult
+            auth.startActivityForSignInWithProvider(any(), any())
+        }
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        verify(exactly = 1) { auth.startActivityForSignInWithProvider(any(), any()) }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = CredentialsFailException::class)
+    fun `should be return CredentialsFailException for pending `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } throws FirebaseAuthInvalidCredentialsException("", "")
+
+        remoteUser.signIn(activity)
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = CredentialsFailException::class)
+    fun `should be return CredentialsFailException for start activity `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } answers { null } andThenThrows FirebaseAuthInvalidCredentialsException("", "")
+        every { taskResult.isSuccessful } returns true
+        every { taskResult.isCanceled } returns false
+        every { taskResult.result } answers { null }
+
+        every { auth.startActivityForSignInWithProvider(any(), any()) } returns taskResult
+
+        remoteUser.signIn(activity)
+
+        verifySequence {
+            auth.pendingAuthResult
+            auth.startActivityForSignInWithProvider(any(), any())
+        }
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        verify(exactly = 1) { auth.startActivityForSignInWithProvider(any(), any()) }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = AuthenticationException::class)
+    fun `should be return AuthenticationException for pending `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } throws FirebaseAuthInvalidUserException("", "")
+
+        remoteUser.signIn(activity)
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = AuthenticationException::class)
+    fun `should be return AuthenticationException for start activity `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } answers { null } andThenThrows FirebaseAuthInvalidUserException("", "")
+        every { taskResult.isSuccessful } returns true
+        every { taskResult.isCanceled } returns false
+        every { taskResult.result } answers { null }
+
+        every { auth.startActivityForSignInWithProvider(any(), any()) } returns taskResult
+
+        remoteUser.signIn(activity)
+
+        verifySequence {
+            auth.pendingAuthResult
+            auth.startActivityForSignInWithProvider(any(), any())
+        }
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        verify(exactly = 1) { auth.startActivityForSignInWithProvider(any(), any()) }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = UserCollisionException::class)
+    fun `should be return UserCollisionException for pending `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } throws FirebaseAuthUserCollisionException("", "")
+
+        remoteUser.signIn(activity)
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = UserCollisionException::class)
+    fun `should be return UserCollisionException for start activity `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } answers { null } andThenThrows FirebaseAuthUserCollisionException("", "")
+        every { taskResult.isSuccessful } returns true
+        every { taskResult.isCanceled } returns false
+        every { taskResult.result } answers { null }
+
+        every { auth.startActivityForSignInWithProvider(any(), any()) } returns taskResult
+
+        remoteUser.signIn(activity)
+
+        verifySequence {
+            auth.pendingAuthResult
+            auth.startActivityForSignInWithProvider(any(), any())
+        }
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        verify(exactly = 1) { auth.startActivityForSignInWithProvider(any(), any()) }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = AuthenticationException::class)
+    fun `should be return exception web for start activity `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } answers { null } andThenThrows FirebaseAuthWebException("", "")
+        every { taskResult.isSuccessful } returns true
+        every { taskResult.isCanceled } returns false
+        every { taskResult.result } answers { null }
+
+        every { auth.startActivityForSignInWithProvider(any(), any()) } returns taskResult
+
+        remoteUser.signIn(activity)
+
+        verifySequence {
+            auth.pendingAuthResult
+            auth.startActivityForSignInWithProvider(any(), any())
+        }
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        verify(exactly = 1) { auth.startActivityForSignInWithProvider(any(), any()) }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = AuthenticationException::class)
+    fun `should be return exception web for pending `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } throws FirebaseAuthWebException("", "")
+
+        remoteUser.signIn(activity)
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = AuthenticationException::class)
+    fun `should be return FirebaseAuthException for pending `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } throws FirebaseAuthException("", "")
+
+        remoteUser.signIn(activity)
+
+        verify(exactly = 1) { auth.pendingAuthResult }
+        confirmVerified(auth)
+    }
+
+    @Test(expected = AuthenticationException::class)
+    fun `should be return FirebaseAuthException for start activity `() = runTest {
+
+        every { auth.pendingAuthResult } returns taskResult
+
+        every { taskResult.isComplete } returns true
+        every { taskResult.exception } answers { null } andThenThrows FirebaseAuthException("", "")
+        every { taskResult.isSuccessful } returns true
+        every { taskResult.isCanceled } returns false
+        every { taskResult.result } answers { null }
+
+        every { auth.startActivityForSignInWithProvider(any(), any()) } returns taskResult
+
+        remoteUser.signIn(activity)
 
         verifySequence {
             auth.pendingAuthResult
