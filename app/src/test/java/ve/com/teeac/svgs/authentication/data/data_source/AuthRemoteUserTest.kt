@@ -5,7 +5,9 @@ import com.google.firebase.auth.*
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -19,7 +21,7 @@ import java.lang.Exception
 @ExperimentalCoroutinesApi
 class AuthRemoteUserTest {
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var auth: FirebaseAuth
 
     @MockK
@@ -46,13 +48,14 @@ class AuthRemoteUserTest {
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         mockkStatic("kotlinx.coroutines.tasks.TasksKt")
-
+        Dispatchers.setMain(Dispatchers.Unconfined)
         remoteUser = AuthRemoteFirebase(auth)
     }
 
     @After
     fun tearDown() {
         unmockkAll()
+        Dispatchers.resetMain()
     }
 
     @Test

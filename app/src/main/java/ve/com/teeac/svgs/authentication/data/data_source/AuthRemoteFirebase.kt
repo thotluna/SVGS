@@ -7,7 +7,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
-import timber.log.Timber
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.data.utils.convertFirebaseUserToUserInfo
 import ve.com.teeac.svgs.core.exceptions.AuthenticationException
@@ -51,8 +50,6 @@ class AuthRemoteFirebase @Inject constructor(
             }
             auth.addAuthStateListener(authStateListener)
             awaitClose { auth.removeAuthStateListener(authStateListener) }
-        }.catch {
-            Timber.d("Error. Update current user")
         }.map { authentication ->
             authentication.currentUser?.convertFirebaseUserToUserInfo()
         }.shareIn(
