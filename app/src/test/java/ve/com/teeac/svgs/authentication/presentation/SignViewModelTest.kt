@@ -11,7 +11,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import ve.com.teeac.svgs.authentication.domain.use_case.ObserverStatusAuthUseCase
+import ve.com.teeac.svgs.authentication.domain.use_case.StateUserUseCase
 
 @ExperimentalCoroutinesApi
 @DelicateCoroutinesApi
@@ -20,7 +20,7 @@ class SignViewModelTest {
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @MockK
-    lateinit var observerStatusAuthUseCase: ObserverStatusAuthUseCase
+    lateinit var stateUserUseCase: StateUserUseCase
 
     private lateinit var viewModel: SignViewModel
 
@@ -29,11 +29,11 @@ class SignViewModelTest {
         MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(mainThreadSurrogate)
 
-        coEvery { observerStatusAuthUseCase() } coAnswers {
+        coEvery { stateUserUseCase() } coAnswers {
             flow { emit(null) }
         }
 
-        viewModel = SignViewModel(observerStatusAuthUseCase)
+        viewModel = SignViewModel(stateUserUseCase)
     }
 
     @After

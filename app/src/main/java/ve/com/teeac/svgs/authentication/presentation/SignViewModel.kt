@@ -7,13 +7,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ve.com.teeac.svgs.authentication.domain.use_case.ObserverStatusAuthUseCase
+import ve.com.teeac.svgs.authentication.domain.use_case.StateUserUseCase
 import ve.com.teeac.svgs.core.exceptions.ExceptionManager
 import javax.inject.Inject
 
 @HiltViewModel
 class SignViewModel @Inject constructor(
-    private val observerStatusAuthUseCase: ObserverStatusAuthUseCase
+    private val stateUserUseCase: StateUserUseCase
 ) : ViewModel() {
 
     private val exceptionManager = ExceptionManager.getInstance()
@@ -23,7 +23,7 @@ class SignViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            observerStatusAuthUseCase().collectLatest {
+            stateUserUseCase().collectLatest {
                 it?.let {
                     _isLoading.value = false
                 }

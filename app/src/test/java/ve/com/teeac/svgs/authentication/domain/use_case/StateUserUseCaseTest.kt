@@ -9,7 +9,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
@@ -17,12 +16,12 @@ import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.data.repository.AuthRepositoryImpl
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 
-class ObserverStatusAuthUseCaseTest {
+class StateUserUseCaseTest {
 
     @MockK
     lateinit var auth: AuthRemoteUser
 
-    lateinit var useCase: ObserverStatusAuthUseCase
+    lateinit var useCase: StateUserUseCase
 
     @ExperimentalCoroutinesApi
     @Before
@@ -30,7 +29,7 @@ class ObserverStatusAuthUseCaseTest {
         MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(Dispatchers.Unconfined)
         val repository: AuthRepository = AuthRepositoryImpl(auth)
-        useCase = ObserverStatusAuthUseCase(repository)
+        useCase = StateUserUseCase(repository)
     }
 
     @ExperimentalCoroutinesApi

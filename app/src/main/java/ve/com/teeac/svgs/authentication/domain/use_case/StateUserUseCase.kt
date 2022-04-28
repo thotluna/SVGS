@@ -5,7 +5,7 @@ import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.domain.repositories.AuthRepository
 import javax.inject.Inject
 
-class ObserverStatusAuthUseCase @Inject constructor(
+class StateUserUseCase @Inject constructor(
     private val repository: AuthRepository,
 ) {
     operator fun invoke(): Flow<User?> = repository.authStateChanges()
