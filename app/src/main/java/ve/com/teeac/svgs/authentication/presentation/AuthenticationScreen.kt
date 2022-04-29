@@ -63,7 +63,7 @@ fun AuthenticationForm(
 
     val scrollState = rememberScrollState()
 
-    var isLoading = viewModel.isLoading.value
+    val isLoading by viewModel.isLoading
 
     fun handleSubmit() {
         viewModel.onEvent(SignEvent.OnLoading)
@@ -95,7 +95,7 @@ fun AuthenticationForm(
                 )
                 SocialButtons(
                     enabled = !isLoading,
-                    onLoading = { isLoading = true },
+                    onLoading = { viewModel.onEvent(SignEvent.OnLoading) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
