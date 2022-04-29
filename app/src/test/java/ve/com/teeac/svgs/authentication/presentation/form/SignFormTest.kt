@@ -18,7 +18,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowLog
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.domain.ValidationField
 import ve.com.teeac.svgs.authentication.domain.use_case.SignInByEmailAndPasswordUseCase
@@ -53,7 +52,7 @@ class SignFormTest {
 
         viewModel = SignFormViewModel(upUseCase, inUseCase)
 
-        ShadowLog.stream = System.out
+        //        ShadowLog.stream = System.out
     }
 
     private fun setComposeGeneric() {
@@ -66,7 +65,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `Should be swith form Sign In and Sign Up`() {
+    fun should_be_swith_form_Sign_In_and_Sign_Up() {
 
         setComposeGeneric()
 
@@ -83,7 +82,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be return form Sign In`() {
+    fun should_be_return_form_Sign_In() {
 
         setComposeGeneric()
 
@@ -100,7 +99,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be return form Sign up`() {
+    fun should_be_return_form_Sign_up() {
 
         setComposeGeneric()
 
@@ -137,7 +136,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `showld be changed focus the Username field a Password field`() {
+    fun showld_be_changed_focus_the_Username_field_a_Password_field() {
 
         setComposeGeneric()
 
@@ -153,7 +152,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `showld be show list to error from password`() {
+    fun showld_be_show_list_to_error_from_password() {
 
         setComposeGeneric()
 
@@ -177,7 +176,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `showld be changed focus the password to confirm password `() {
+    fun showld_be_changed_focus_the_password_to_confirm_password() {
 
         setComposeGeneric()
 
@@ -196,7 +195,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `showld be show list to error from confirm password`() {
+    fun showld_be_show_list_to_error_from_confirm_password() {
 
         setComposeGeneric()
 
@@ -222,7 +221,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `showld be show and hide value password`() {
+    fun showld_be_show_and_hide_value_password() {
 
         setComposeGeneric()
 
@@ -252,7 +251,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `showld be show and hide value confirm password`() {
+    fun showld_be_show_and_hide_value_confirm_password() {
 
         setComposeGeneric()
 
@@ -285,7 +284,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be all desable`() {
+    fun should_be_all_desable() {
         compose.setContent {
             SignForm(
                 onSubmit = { },
@@ -311,7 +310,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show list error with Black and Email invalid in Username field`() {
+    fun should_be_show_list_error_with_Black_and_Email_invalid_in_Username_field() {
 
         setComposeGeneric()
 
@@ -331,7 +330,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show list error with only Email invalid in Username field`() {
+    fun should_be_show_list_error_with_only_Email_invalid_in_Username_field() {
 
         setComposeGeneric()
 
@@ -353,7 +352,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show without list error in Username field`() {
+    fun should_be_show_without_list_error_in_Username_field() {
 
         setComposeGeneric()
 
@@ -371,7 +370,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show list Black and Not Valid error in Password field`() {
+    fun should_be_show_list_Black_and_Not_Valid_error_in_Password_field() {
 
         setComposeGeneric()
 
@@ -391,7 +390,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show list error only Not Valid in Password field`() {
+    fun should_be_show_list_error_only_Not_Valid_in_Password_field() {
 
         setComposeGeneric()
 
@@ -413,7 +412,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show without list in Password field`() {
+    fun should_be_show_without_list_in_Password_field() {
 
         setComposeGeneric()
 
@@ -431,7 +430,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show list error Black and Not Match in Confirm Password field `() {
+    fun should_be_show_list_error_Black_and_Not_Match_in_Confirm_Password_field() {
 
         setComposeGeneric()
 
@@ -457,7 +456,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show list error only Not Match in Confirm Password field`() {
+    fun should_be_show_list_error_only_Not_Match_in_Confirm_Password_field() {
 
         setComposeGeneric()
 
@@ -485,7 +484,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show list error Black and Not Match changed Password in Confirm Password field `() {
+    fun should_be_show_list_error_Black_and_Not_Match_changed_Password_in_Confirm_Password_field() {
 
         setComposeGeneric()
 
@@ -513,7 +512,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be show not list error in Confirm Password field `() {
+    fun should_be_show_not_list_error_in_Confirm_Password_field() {
 
         setComposeGeneric()
 
@@ -537,7 +536,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should not do anything when I click sign in with errors`() {
+    fun should_not_do_anything_when_I_click_sign_in_with_errors() {
         compose.setContent {
             SignForm(
                 onSubmit = { },
@@ -560,7 +559,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should not do anything when I click sign up with errors`() {
+    fun should_not_do_anything_when_I_click_sign_up_with_errors() {
         compose.setContent {
             SignForm(
                 onSubmit = { },
@@ -583,7 +582,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be return user and password correct in sign in`() = runTest {
+    fun should_be_return_user_and_password_correct_in_sign_in() = runTest {
         compose.setContent {
             SignForm(
                 onSubmit = { },
@@ -613,7 +612,7 @@ class SignFormTest {
     }
 
     @Test
-    fun `should be return user and password correct in sign up`() = runTest {
+    fun should_be_return_user_and_password_correct_in_sign_up() = runTest {
         compose.setContent {
             SignForm(
                 onSubmit = { },
