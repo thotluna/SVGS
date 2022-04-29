@@ -2,13 +2,17 @@ package ve.com.teeac.svgs.authentication.domain.use_case
 
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import ve.com.teeac.svgs.authentication.data.data_source.AuthRemoteUser
@@ -45,13 +49,33 @@ class StateUserUseCaseTest {
 
         val expected = User("user", "email", "token")
 
-        val sharedFlow = MutableSharedFlow<User?>()
-//        val sharedFlow = _sharedFlow.asSharedFlow()
-        sharedFlow.emit(expected)
-
-        every { auth.authStateChanges() } returns sharedFlow
+        every { auth.authStateChanges() } returns flow { emit(expected) }
+            .shareIn(
+                CoroutineScope(SupervisorJob() + Dispatchers.Unconfined),
+                replay = 1,
+                started = SharingStarted.WhileSubscribed()
+            )
 
         val user = useCase().take(1)
+        assertEquals(expected, user.first())
+
+        verify(exactly = 1) { auth.authStateChanges() }
+        confirmVerified(auth)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `should be return null`() = runTest {
+
+        every { auth.authStateChanges() } returns flow { emit(null) }
+            .shareIn(
+                CoroutineScope(SupervisorJob() + Dispatchers.Unconfined),
+                replay = 1,
+                started = SharingStarted.WhileSubscribed()
+            )
+
+        val user = useCase().take(1)
+        assertNull(user.first())
 
         verify(exactly = 1) { auth.authStateChanges() }
         confirmVerified(auth)
