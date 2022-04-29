@@ -1,4 +1,4 @@
-package ve.com.teeac.svgs.main
+package ve.com.teeac.svgs.authentication.presentation.status_user
 
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import ve.com.teeac.svgs.authentication.data.models.User
 import ve.com.teeac.svgs.authentication.domain.use_case.StateUserUseCase
-import ve.com.teeac.svgs.authentication.presentation.status_user.StatusUserViewModel
 
+@ExperimentalCoroutinesApi
 class StatusUserViewModelTest {
 
     @MockK
@@ -24,14 +25,12 @@ class StatusUserViewModelTest {
 
     lateinit var viewModel: StatusUserViewModel
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(Dispatchers.Unconfined)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         clearAllMocks()
@@ -52,9 +51,6 @@ class StatusUserViewModelTest {
 
     @Test
     fun `should be return null`() {
-
-        val user = User("display", "emal", "token")
-
         every { useCase() } returns flow { emit(null) }
 
         viewModel = StatusUserViewModel(useCase)

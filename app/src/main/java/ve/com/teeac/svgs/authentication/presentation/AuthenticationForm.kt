@@ -13,13 +13,45 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import ve.com.teeac.svgs.R
 import ve.com.teeac.svgs.authentication.presentation.form.SignForm
 import ve.com.teeac.svgs.authentication.presentation.google_button.GoogleButton
 import ve.com.teeac.svgs.authentication.presentation.twitter_button.TwitterButton
+
+@ExperimentalComposeUiApi
+@Composable
+fun AuthenticationScreen(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(.3f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h1,
+                color = MaterialTheme.colors.surface
+            )
+        }
+        AuthenticationForm(
+            modifier = Modifier
+                .fillMaxHeight(.7F)
+                .align(Alignment.BottomCenter),
+        )
+    }
+}
 
 @ExperimentalComposeUiApi
 @Preview
@@ -54,7 +86,6 @@ fun AuthenticationForm(
         ) {
             Column(
                 modifier = Modifier
-//                    .align(Alignment.TopCenter)
                     .scrollable(scrollState, orientation = Orientation.Vertical)
             ) {
                 TitleForm()
