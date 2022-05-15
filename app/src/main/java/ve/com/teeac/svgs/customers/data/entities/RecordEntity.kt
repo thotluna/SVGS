@@ -1,17 +1,17 @@
-package ve.com.teeac.svgs.customers.data.pojo
+package ve.com.teeac.svgs.customers.data.entities
 
 import java.util.*
 
-data class RecordPojo(
+data class RecordEntity(
     val id: String? = null,
-    val customer: MinCustomerPojo? = null,
-    val service: MinServicePojo? = null,
-    val element: MinElementPojo? = null,
+    val customer: CustomerMin? = null,
+    val service: SystemMin? = null,
+    val element: ElementMin? = null,
     val details: String = "",
     val createdBy: String = "",
     val createdAt: Long = Date().time
 ) {
-    fun convertMin(): MinRecordPojo {
+    fun convertMin(): RecordMin {
         var location = ""
         customer?.let {
             location += "$it "
@@ -20,9 +20,9 @@ data class RecordPojo(
             location += "$it "
         }
         element?.let {
-            location += "$it "
+            location += "$it"
         }
-        return MinRecordPojo(
+        return RecordMin(
             id = id!!,
             location = location.trim(),
             createdBy = createdBy,
@@ -31,7 +31,7 @@ data class RecordPojo(
     }
 }
 
-data class MinRecordPojo(
+data class RecordMin(
 
     val id: String? = null,
     val location: String? = null,

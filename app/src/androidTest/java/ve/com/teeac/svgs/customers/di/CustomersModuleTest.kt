@@ -6,7 +6,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ve.com.teeac.svgs.customers.data.data_source.CustomerRemoteDataSource
+import ve.com.teeac.svgs.customers.data.data_source.CustumerFirestore
+import ve.com.teeac.svgs.customers.data.data_source.SystemFirestore
 import javax.inject.Singleton
 
 @Module
@@ -29,7 +30,13 @@ object CustomersModuleTest {
 
     @Singleton
     @Provides
-    fun providerCustomerRemoteDataSource(firestore: FirebaseFirestore): CustomerRemoteDataSource {
-        return CustomerRemoteDataSource(firestore)
+    fun providerCustomerRemoteDataSource(firestore: FirebaseFirestore): CustumerFirestore {
+        return CustumerFirestore(firestore)
+    }
+
+    @Singleton
+    @Provides
+    fun providerSystemRemoteDataSource(firestore: FirebaseFirestore): SystemFirestore {
+        return SystemFirestore(firestore)
     }
 }
